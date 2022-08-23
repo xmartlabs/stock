@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:stock/south_of_truth.dart';
+import 'package:stock/source_of_truth.dart';
 import 'package:stock/store.dart';
 import 'package:stock/store_response.dart';
 

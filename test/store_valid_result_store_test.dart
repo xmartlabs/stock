@@ -9,7 +9,7 @@ import 'common/store_test_extensions.dart';
 
 void main() {
   group("Valid results", () {
-    test('South of truth and fetcher are called', () async {
+    test('Source of truth and fetcher are called', () async {
       final sourceOfTruth = CachedSourceOfTruthWithDefaultValue<int, int>(-1);
       final fetcher = Fetcher.ofFuture((int key) async => 1);
       final store = Store<int, int>(
@@ -27,7 +27,7 @@ void main() {
           ]));
     });
 
-    test('South of truth data is returned before fetcher data', () async {
+    test('Source of truth data is returned before fetcher data', () async {
       final sourceOfTruth = DelayedSourceOfTruth<int, int>(-1);
       final fetcher = Fetcher.ofFuture((int key) async => 1);
       final store = Store<int, int>(
@@ -48,7 +48,7 @@ void main() {
           ]));
     });
 
-    test('South of truth and stream fetcher are called', () async {
+    test('Source of truth and stream fetcher are called', () async {
       final sourceOfTruth = CachedSourceOfTruthWithDefaultValue<int, int>(-1);
       final fetcher =
           Fetcher.ofStream((int key) => Stream.fromIterable([1, 2, 3]));

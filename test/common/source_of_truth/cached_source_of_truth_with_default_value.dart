@@ -1,5 +1,5 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:stock/south_of_truth.dart';
+import 'package:stock/source_of_truth.dart';
 
 class CachedSourceOfTruthWithDefaultValue<Key, T>
     extends CachedSourceOfTruth<Key, T> {

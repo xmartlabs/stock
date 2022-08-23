@@ -1,3 +1,4 @@
+import 'package:stock/errors.dart';
 import 'package:stock/store_response.dart';
 
 extension StoreResponseExtensions<T> on StoreResponse<T> {
@@ -12,11 +13,11 @@ extension StoreResponseExtensions<T> on StoreResponse<T> {
 
   T requireData() => map(
         data: (response) => response.value,
-        loading: (_) => throw Exception('There is no data in loading'),
+        loading: (_) => throw StockError('There is no data in loading'),
         error: (response) => throw response.error,
       );
 
-  T? getData() => map(
+  T? get data => map(
         data: (response) => response.value,
         loading: (_) => null,
         error: (response) => null,

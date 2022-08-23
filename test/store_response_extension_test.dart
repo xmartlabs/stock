@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:stock/errors.dart';
 import 'package:stock/src/extensions/store_response_extensions.dart';
 import 'package:stock/store_response.dart';
 
@@ -14,7 +15,7 @@ void main() {
     test('requireData of a loading response throws a exception', () async {
       expect(
         const StoreResponse.loading(ResponseOrigin.fetcher).requireData,
-        throwsException,
+        throwsA((e) => e is StockError),
       );
     });
     test('requireData of a data returns the data', () async {
@@ -28,19 +29,19 @@ void main() {
     test('getData of an error returns null', () async {
       final customEx = Exception("Custom ex");
       expect(
-        StoreResponse.error(ResponseOrigin.fetcher, customEx).getData(),
+        StoreResponse.error(ResponseOrigin.fetcher, customEx).data,
         equals(null),
       );
     });
     test('getData of a loading response returns null', () async {
       expect(
-        const StoreResponse.loading(ResponseOrigin.fetcher).getData(),
+        const StoreResponse.loading(ResponseOrigin.fetcher).data,
         equals(null),
       );
     });
     test('getData of a data response returns the data', () async {
       expect(
-        StoreResponse.data(ResponseOrigin.fetcher, 1).getData(),
+        StoreResponse.data(ResponseOrigin.fetcher, 1).data,
         equals(1),
       );
     });

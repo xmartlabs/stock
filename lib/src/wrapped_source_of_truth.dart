@@ -1,4 +1,4 @@
-import 'package:stock/south_of_truth.dart';
+import 'package:stock/source_of_truth.dart';
 
 class WriteWrappedSourceOfTruth<Key, T> extends CachedSourceOfTruth<Key, T> {
   final SourceOfTruth<Key, T>? _realSourceOfTruth;

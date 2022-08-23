@@ -1,4 +1,4 @@
-import 'south_of_truth.dart';
+import 'source_of_truth.dart';
 
 abstract class StoreConverter<T0, T1> {
   T1 fromT0(T0 t0);

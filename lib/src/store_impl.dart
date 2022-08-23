@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:stock/fetcher.dart';
-import 'package:stock/south_of_truth.dart';
+import 'package:stock/source_of_truth.dart';
 import 'package:stock/src/extensions/future_stream_extensions.dart';
 import 'package:stock/src/extensions/store_response_extensions.dart';
 import 'package:stock/src/factory_fetcher.dart';
@@ -12,14 +12,14 @@ import 'package:stock/store.dart';
 import 'package:stock/store_request.dart';
 import 'package:stock/store_response.dart';
 
-class RealStore<Key, Output> implements Store<Key, Output> {
+class StoreImpl<Key, Output> implements Store<Key, Output> {
   final Fetcher<Key, Output> _fetcher;
   final SourceOfTruth<Key, Output>? _sourceOfTruth;
 
   final Map<Key, int> _writingMap = {};
   final _writingLock = Mutex();
 
-  RealStore({
+  StoreImpl({
     required Fetcher<Key, Output> fetcher,
     required SourceOfTruth<Key, Output>? sourceOfTruth,
   })  : _fetcher = fetcher,
@@ -27,7 +27,7 @@ class RealStore<Key, Output> implements Store<Key, Output> {
 
   @override
   Future<Output> fresh(Key key) =>
-      _generateCombinedNetworkAndSouthOfTruthStream(
+      _generateCombinedNetworkAndSourceOfTruthStream(
         StoreRequest(key: key, refresh: true),
         WriteWrappedSourceOfTruth(_sourceOfTruth),
         _fetcher as FactoryFetcher<Key, Output>,
@@ -51,35 +51,35 @@ class RealStore<Key, Output> implements Store<Key, Output> {
       ));
 
   Stream<StoreResponse<Output>> streamFromRequest(StoreRequest<Key> request) =>
-      _generateCombinedNetworkAndSouthOfTruthStream(
+      _generateCombinedNetworkAndSourceOfTruthStream(
         request,
         _sourceOfTruth == null ? CachedSourceOfTruth() : _sourceOfTruth!,
         _fetcher as FactoryFetcher<Key, Output>,
       );
 
-  Stream<StoreResponse<Output>> _generateCombinedNetworkAndSouthOfTruthStream(
+  Stream<StoreResponse<Output>> _generateCombinedNetworkAndSourceOfTruthStream(
     StoreRequest<Key> request,
     SourceOfTruth<Key, Output> sourceOfTruth,
     FactoryFetcher<Key, Output> fetcher,
   ) async* {
-    StreamController<StoreResponse<Output?>> controller =
+    final StreamController<StoreResponse<Output?>> controller =
         StreamController.broadcast();
-    final dbLock = Mutex();
-    await dbLock.acquire();
+    final syncLock = Mutex();
+    await syncLock.acquire();
 
     final fetcherSubscription = _generateNetworkStream(
       dataStreamController: controller,
       request: request,
       sourceOfTruth: sourceOfTruth,
       fetcher: fetcher,
-      emitMutex: dbLock,
+      emitMutex: syncLock,
     );
 
     final sourceOfTruthSubscription = _generateSourceOfTruthStreamSubscription(
       request: request,
       sourceOfTruth: sourceOfTruth,
       dataStreamController: controller,
-      dbLock: dbLock,
+      dbLock: syncLock,
     );
 
     yield* controller.stream.whereDataNotNull().doOnCancel(() async {
@@ -142,7 +142,7 @@ class RealStore<Key, Output> implements Store<Key, Output> {
         .where((event) => event.origin == ResponseOrigin.sourceOfTruth)
         .where((event) => !event.isLoading)
         .first
-        .then((value) => value.getData() == null);
+        .then((value) => value.data == null);
   }
 
   StreamSubscription _generateSourceOfTruthStreamSubscription({
@@ -151,7 +151,7 @@ class RealStore<Key, Output> implements Store<Key, Output> {
     required Mutex dbLock,
     required StreamController<StoreResponse<Output?>> dataStreamController,
   }) {
-    var releaseLock = true;
+    var initialSyncDone = false;
     final sourceOfTruthSubscription = sourceOfTruth
         .reader(request.key)
         .mapToResponse(ResponseOrigin.sourceOfTruth)
@@ -171,8 +171,8 @@ class RealStore<Key, Output> implements Store<Key, Output> {
       } else {
         dataStreamController.add(response.swapType());
       }
-      if (dbLock.isLocked && releaseLock) {
-        releaseLock = false;
+      if (dbLock.isLocked && !initialSyncDone) {
+        initialSyncDone = true;
         dbLock.release();
       }
     });
