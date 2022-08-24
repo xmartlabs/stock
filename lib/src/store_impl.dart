@@ -7,7 +7,7 @@ import 'package:stock/source_of_truth.dart';
 import 'package:stock/src/extensions/future_stream_extensions.dart';
 import 'package:stock/src/extensions/store_response_extensions.dart';
 import 'package:stock/src/factory_fetcher.dart';
-import 'package:stock/src/wrapped_source_of_truth.dart';
+import 'package:stock/src/source_of_truth_impl.dart';
 import 'package:stock/store.dart';
 import 'package:stock/store_request.dart';
 import 'package:stock/store_response.dart';
@@ -104,7 +104,7 @@ class StoreImpl<Key, Output> implements Store<Key, Output> {
                   await _writingLock
                       .protect(() async => _incrementWritingMap(request, 1));
                   var writerResult = await sourceOfTruth
-                      ?.writer(request.key, response.value)
+                      ?.write(request.key, response.value)
                       .mapToResponse(ResponseOrigin.fetcher);
                   if (writerResult is StoreResponseError) {
                     dataStreamController.add(writerResult.swapType());

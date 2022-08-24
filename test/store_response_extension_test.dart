@@ -15,7 +15,11 @@ void main() {
     test('requireData of a loading response throws a exception', () async {
       expect(
         const StoreResponse.loading(ResponseOrigin.fetcher).requireData,
-        throwsA((e) => e is StockError),
+        throwsA(
+          (e) =>
+              e is StockError &&
+              e.toString() == 'StockError: There is no data in loading',
+        ),
       );
     });
     test('requireData of a data returns the data', () async {
