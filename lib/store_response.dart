@@ -60,11 +60,7 @@ class StoreResponseData<T> extends StoreResponse<T> {
           other.value == value);
 
   @override
-  int get hashCode => Object.hash(
-        runtimeType,
-        origin.hashCode,
-        value.hashCode,
-      );
+  int get hashCode => Object.hash(runtimeType, origin.hashCode, value.hashCode);
 }
 
 class StoreResponseError<T> extends StoreResponse<T> {
