@@ -1,6 +1,8 @@
 import 'package:stock/src/factory_fetcher.dart';
 
-class Fetcher<Key, Output> {
+abstract class Fetcher<Key, Output> {
+  Fetcher._();
+
   static Fetcher<Key, Output> ofFuture<Key, Output>(
           Future<Output> Function(Key key) futureFactory) =>
       FutureFetcher(futureFactory);
