@@ -13,8 +13,11 @@ class StoreResponse<Output> with _$StoreResponse<Output> {
       StoreResponseLoading<Output>;
 
   @With<_ResponseWithOrigin>()
-  const factory StoreResponse.error(ResponseOrigin origin, Object error,
-      [StackTrace? stackTrace]) = StoreResponseError<Output>;
+  const factory StoreResponse.error(
+    ResponseOrigin origin,
+    Object error, [
+    StackTrace? stackTrace,
+  ]) = StoreResponseError<Output>;
 }
 
 mixin _ResponseWithOrigin {
