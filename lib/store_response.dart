@@ -34,9 +34,6 @@ mixin _ResponseWithOrigin {
 
 /// Represents the origin for a [StoreResponse].
 enum ResponseOrigin {
-  /// [StoreResponse] is sent from the cache
-  cache,
-
   /// [StoreResponse] is sent from the [SourceOfTruth]
   sourceOfTruth,
 
