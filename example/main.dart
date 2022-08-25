@@ -38,9 +38,13 @@ void main() async {
     }
   });
 
+  // Get Xmartlabs tweets from the network and save them in the DB.
+  final List<Tweet> freshTweets = await store.fresh('xmartlabs');
+
   // Get Xmartlabs tweets
-  // It will try to use Local Database Tweets. However, if the DB tweets is empty, it will fetch new tweets from the fetcher.
-  final List<Tweet> tweets = await store.get('xmartlabs');
+  // It will try to use Local Database Tweets.
+  // However, if the DB tweets are empty, it will fetch new tweets from the fetcher, and save them in the DB.
+  final List<Tweet> cachedTweets = await store.get('xmartlabs');
 }
 
 void _displayTweetsInUI(List<Tweet>? tweets) {}
