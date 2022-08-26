@@ -13,7 +13,7 @@ import 'package:stock/store_request.dart';
 import 'package:stock/store_response.dart';
 
 class StoreImpl<Key, Output> implements Store<Key, Output> {
-  final Fetcher<Key, Output> _fetcher;
+  final FactoryFetcher<Key, Output> _fetcher;
   final SourceOfTruth<Key, Output>? _sourceOfTruth;
 
   final Map<Key, int> _writingMap = {};
@@ -22,7 +22,7 @@ class StoreImpl<Key, Output> implements Store<Key, Output> {
   StoreImpl({
     required Fetcher<Key, Output> fetcher,
     required SourceOfTruth<Key, Output>? sourceOfTruth,
-  })  : _fetcher = fetcher,
+  })  : _fetcher = fetcher as FactoryFetcher<Key, Output>,
         _sourceOfTruth = sourceOfTruth;
 
   @override
@@ -30,7 +30,6 @@ class StoreImpl<Key, Output> implements Store<Key, Output> {
       _generateCombinedNetworkAndSourceOfTruthStream(
         StoreRequest(key: key, refresh: true),
         WriteWrappedSourceOfTruth(_sourceOfTruth),
-        _fetcher as FactoryFetcher<Key, Output>,
       )
           .where((event) => event is! StoreResponseLoading)
           .where((event) => event.origin == ResponseOrigin.fetcher)
@@ -54,13 +53,11 @@ class StoreImpl<Key, Output> implements Store<Key, Output> {
       _generateCombinedNetworkAndSourceOfTruthStream(
         request,
         _sourceOfTruth == null ? CachedSourceOfTruth() : _sourceOfTruth!,
-        _fetcher as FactoryFetcher<Key, Output>,
       );
 
   Stream<StoreResponse<Output>> _generateCombinedNetworkAndSourceOfTruthStream(
     StoreRequest<Key> request,
     SourceOfTruth<Key, Output> sourceOfTruth,
-    FactoryFetcher<Key, Output> fetcher,
   ) async* {
     final StreamController<StoreResponse<Output?>> controller =
         StreamController.broadcast();
@@ -71,7 +68,6 @@ class StoreImpl<Key, Output> implements Store<Key, Output> {
       dataStreamController: controller,
       request: request,
       sourceOfTruth: sourceOfTruth,
-      fetcher: fetcher,
       emitMutex: syncLock,
     );
 
@@ -91,14 +87,18 @@ class StoreImpl<Key, Output> implements Store<Key, Output> {
   StreamSubscription _generateNetworkStream({
     required StoreRequest<Key> request,
     required SourceOfTruth<Key, Output>? sourceOfTruth,
-    required FactoryFetcher<Key, Output> fetcher,
     required Mutex emitMutex,
     required StreamController<StoreResponse<Output?>> dataStreamController,
   }) =>
-      Stream.fromFuture(
-              _shouldStartNetworkStream(request, dataStreamController))
+      Stream.fromFuture(_shouldStartNetworkStream(
+        request,
+        dataStreamController,
+      ))
           .flatMap((shouldFetchNewValue) => _startNetworkFlow(
-              shouldFetchNewValue, dataStreamController, fetcher, request))
+                shouldFetchNewValue,
+                dataStreamController,
+                request,
+              ))
           .listen((response) => emitMutex.protect(() async {
                 if (response is StoreResponseData<Output>) {
                   await _writingLock
@@ -120,21 +120,25 @@ class StoreImpl<Key, Output> implements Store<Key, Output> {
       _writingMap[request.key] = (_writingMap[request.key] ?? 0) + increment;
 
   Stream<StoreResponse<Output>> _startNetworkFlow(
-      bool shouldFetchNewValue,
-      StreamController<StoreResponse<dynamic>> dataStreamController,
-      FactoryFetcher<Key, Output> fetcher,
-      StoreRequest<Key> request) {
+    bool shouldFetchNewValue,
+    StreamController<StoreResponse<dynamic>> dataStreamController,
+    StoreRequest<Key> request,
+  ) {
     if (shouldFetchNewValue) {
       dataStreamController
           .add(StoreResponseLoading<Output>(ResponseOrigin.fetcher));
-      return fetcher.factory(request.key).mapToResponse(ResponseOrigin.fetcher);
+      return _fetcher
+          .factory(request.key)
+          .mapToResponse(ResponseOrigin.fetcher);
     } else {
       return Rx.never<StoreResponse<Output>>();
     }
   }
 
-  Future<bool> _shouldStartNetworkStream(StoreRequest<Key> request,
-      StreamController<StoreResponse<Output?>> dataStreamController) async {
+  Future<bool> _shouldStartNetworkStream(
+    StoreRequest<Key> request,
+    StreamController<StoreResponse<Output?>> dataStreamController,
+  ) async {
     if (request.refresh) {
       return true;
     }

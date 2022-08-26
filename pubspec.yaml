@@ -1,7 +1,7 @@
 name: stock
 description: Dart Library for Async Data Loading and Caching
 version: 0.0.1
-homepage: https://github.com/xmartlabs/dstore
+homepage: https://github.com/xmartlabs/stock
 
 environment:
   sdk: '>=2.17.0 <3.0.0'
@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  freezed_annotation: 2.1.0
+  async: 2.8.2
   mutex: 3.0.0
   rxdart: 0.27.5
 
@@ -17,8 +17,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: 2.2.0
+  dart_code_metrics: 4.17.1
   flutter_lints: 2.0.1
-  freezed: 2.1.0+1
   mockito: 5.3.0
 
 flutter:

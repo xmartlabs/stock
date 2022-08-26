@@ -3,25 +3,37 @@ import 'package:stock/store_response.dart';
 
 extension StoreResponseExtensions<T> on StoreResponse<T> {
   StoreResponse<R> swapType<R>() {
-    return map(
-      data: (response) => StoreResponse.data(origin, response.value as R),
-      loading: (_) => StoreResponse.loading(origin),
-      error: (response) =>
-          StoreResponse.error(origin, response.error, response.stackTrace),
-    );
+    if (this is StoreResponseData<T>) {
+      return StoreResponse.data(origin, requireData() as R);
+    } else if (isError) {
+      var errorResponse = this as StoreResponseError<T>;
+      return StoreResponse.error(
+        origin,
+        errorResponse.error,
+        errorResponse.stackTrace,
+      );
+    } else if (isLoading) {
+      return StoreResponse.loading(origin);
+    } else {
+      throw StockError('Unknown type');
+    }
   }
 
-  T requireData() => map(
-        data: (response) => response.value,
-        loading: (_) => throw StockError('There is no data in loading'),
-        error: (response) => throw response.error,
-      );
+  T requireData() {
+    if (this is StoreResponseData<T>) {
+      return (this as StoreResponseData<T>).value;
+    } else if (isError) {
+      throw (this as StoreResponseError<T>).error;
+    } else if (isLoading) {
+      throw StockError('There is no data in loading');
+    } else {
+      throw StockError('Unknown type');
+    }
+  }
 
-  T? get data => map(
-        data: (response) => response.value,
-        loading: (_) => null,
-        error: (response) => null,
-      );
+  T? get data => this is StoreResponseData<T>
+      ? (this as StoreResponseData<T>).value
+      : null;
 
   bool get isLoading => this is StoreResponseLoading;
 

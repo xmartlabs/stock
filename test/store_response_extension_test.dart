@@ -24,7 +24,7 @@ void main() {
     });
     test('requireData of a data returns the data', () async {
       expect(
-        StoreResponse.data(ResponseOrigin.fetcher, 1).requireData(),
+        const StoreResponse.data(ResponseOrigin.fetcher, 1).requireData(),
         equals(1),
       );
     });
@@ -45,7 +45,7 @@ void main() {
     });
     test('getData of a data response returns the data', () async {
       expect(
-        StoreResponse.data(ResponseOrigin.fetcher, 1).data,
+        const StoreResponse.data(ResponseOrigin.fetcher, 1).data,
         equals(1),
       );
     });
@@ -57,7 +57,7 @@ void main() {
         equals(false),
       );
       expect(
-        StoreResponse.data(ResponseOrigin.fetcher, 1).isLoading,
+        const StoreResponse.data(ResponseOrigin.fetcher, 1).isLoading,
         equals(false),
       );
       expect(
@@ -71,7 +71,7 @@ void main() {
         equals(true),
       );
       expect(
-        StoreResponse.data(ResponseOrigin.fetcher, 1).isError,
+        const StoreResponse.data(ResponseOrigin.fetcher, 1).isError,
         equals(false),
       );
       expect(

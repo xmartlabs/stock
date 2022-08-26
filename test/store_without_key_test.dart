@@ -23,8 +23,8 @@ void main() {
           resultList,
           equals([
             const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
+            const StoreResponse.data(ResponseOrigin.fetcher, 1),
           ]));
     });
   });

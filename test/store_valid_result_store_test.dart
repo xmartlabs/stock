@@ -22,8 +22,8 @@ void main() {
           resultList,
           equals([
             const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
+            const StoreResponse.data(ResponseOrigin.fetcher, 1),
           ]));
     });
 
@@ -43,8 +43,8 @@ void main() {
           resultList,
           equals([
             const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
+            const StoreResponse.data(ResponseOrigin.fetcher, 1),
           ]));
     });
 
@@ -62,10 +62,10 @@ void main() {
           resultList,
           equals([
             const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            StoreResponse.data(ResponseOrigin.fetcher, 1),
-            StoreResponse.data(ResponseOrigin.fetcher, 2),
-            StoreResponse.data(ResponseOrigin.fetcher, 3),
+            const StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
+            const StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StoreResponse.data(ResponseOrigin.fetcher, 2),
+            const StoreResponse.data(ResponseOrigin.fetcher, 3),
           ]));
     });
 
@@ -82,9 +82,9 @@ void main() {
           resultList,
           equals([
             const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            StoreResponse.data(ResponseOrigin.fetcher, 1),
-            StoreResponse.data(ResponseOrigin.fetcher, 2),
-            StoreResponse.data(ResponseOrigin.fetcher, 3),
+            const StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StoreResponse.data(ResponseOrigin.fetcher, 2),
+            const StoreResponse.data(ResponseOrigin.fetcher, 3),
           ]));
     });
   });

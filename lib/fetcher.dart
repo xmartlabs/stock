@@ -21,7 +21,8 @@ class Fetcher<Key, Output> {
   /// Use when creating a [Store] that fetches objects in a single response per request
   /// network protocol (e.g Http).
   static Fetcher<Key, Output> ofFuture<Key, Output>(
-          Future<Output> Function(Key key) futureFactory) =>
+    Future<Output> Function(Key key) futureFactory,
+  ) =>
       FutureFetcher(futureFactory);
 
   /// "Creates" a [Fetcher] from a [streamFactory] and translates the results into a [StoreResponse].
@@ -32,6 +33,7 @@ class Fetcher<Key, Output> {
   /// Use when creating a [Store] that fetches objects in a multiple responses per request
   /// network protocol (e.g Web Sockets).
   static Fetcher<Key, Output> ofStream<Key, Output>(
-          Stream<Output> Function(Key key) streamFactory) =>
+    Stream<Output> Function(Key key) streamFactory,
+  ) =>
       StreamFetcher(streamFactory);
 }
