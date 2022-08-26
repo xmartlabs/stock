@@ -56,7 +56,7 @@ abstract class SourceOfTruth<Key, T> {
   Future<void> write(Key key, T? value);
 }
 
-// A memory cache implementation of a [SourceOfTruth], which stores the latest value and notify ones.
+// A memory cache implementation of a [SourceOfTruth], which stores the latest value and notify new ones.
 class CachedSourceOfTruth<Key, T> implements SourceOfTruth<Key, T> {
   final _streamController = StreamController<KeyValue<Key, T?>>.broadcast();
 
