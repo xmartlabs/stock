@@ -17,7 +17,7 @@ import 'package:stock/store_extensions.dart';
 ///
 /// This round-trip ensures the data is consistent across the application in case the [Fetcher] does
 /// not return all fields or returns a different class type than the app uses. It is particularly
-/// useful if your application has a local observable database which is directly modified by the app, 
+/// useful if your application has a local observable database which is directly modified by the app,
 /// as Store can observe these changes and update the collectors even before value is synced to the
 /// backend.
 ///
