@@ -1,19 +1,19 @@
 # Stock
 
-Stock is a dart package for loading data from remote and local sources.
-It was inspired by [Store] Kotlin library.
+Stock is a dart package for loading data from both remote and local sources.
+It is inspired by the [Store] Kotlin library.
 
-It prevents excessive calls to the network and disk cache. 
-By utilizing it, you eliminate the possibility of flooding your network with the same request while adding layers of caching.
+Its main goal is to prevent excessive calls to the network and disk cache. 
+By utilizing it, you eliminate the possibility of flooding your network with the same request while, at the same time, adding layers of caching.
 
-Although you can use it without a local source, the greatest benefit comes when you combine Stock with a local database such as [Floor], [Drift], [sqflite], [Realm], etc. 
+Although you can use it without a local source, the greatest benefit comes from combining Stock with a local database such as [Floor], [Drift], [sqflite], [Realm], etc. 
 
 ## Features
 
-- Combine the local (DB, cache) and network data simply. It provides a data `Stream` where you can listen and work with your data. 
-- Know the data `Stream` state. It's useful for example to display a loading indicator or display errors.
-- If you are not using a local DB, `Stock` provides a memory cache, to share and improve your app experience.
-- Work with your data more safely. If an error is thrown, Stock will catch it and returned into the stream to handle it easily.
+- Combine local (DB, cache) and network data simply. It provides a data `Stream` where you can listen and work with your data. 
+- Know the data `Stream` state. It's useful for displaying errors or loading indicators, for example.
+- If you are not using a local DB, `Stock` provides a memory cache, to share and improve upon your app's experience.
+- Work with your data more safely. If an error is thrown, Stock will catch it and return it into the stream so it can be handled easily.
 
 ## Overview
 
@@ -21,13 +21,13 @@ A [`Stock`] is responsible for managing a particular data request.
 
 It is based on two important classes:
 - [`Fetcher`]: defines how data will be fetched over network.
-- [`SourceOfTruth`]: defines how local data will be read and wrote in your local cache. It's optional. Although `Stock` can be used without it, it's recommendable to use it.
+- [`SourceOfTruth`]: defines how local data will be read and written in your local cache. Although `Stock` can be used without it, its use is recommended.
 
 `Stock` uses generic keys as identifiers for data.
 A key can be any value object that properly implements `toString()`, `equals()` and `hashCode()`.
 
-When you create `Stock`, it provides you a bunch of methods to access to the data.
-The most important one is `stream()`, which provides you a `Stream` of your data, which can be used to update your UI or doing an specific action.
+When you create `Stock`, it provides you with a bunch of methods in order to access the data.
+The most important one is `stream()`, which provides you with a `Stream` of your data, which can be used to update your UI or to do a specific action.
 
 
 ## Getting started
@@ -39,7 +39,7 @@ To use this package, add `stock` as a [dependency in your pubspec.yaml file](htt
 The `Fetcher` is required to fetch new data from the network.
 You can create a it from a `Future` or from a `Stream`.
 
-`FutureFetcher` is usually used with a RestApi, whereas `StreamFetcher` is used with a `Stream` source like a Web Socket.
+`FutureFetcher` is usually used alongside a RestApi, whereas `StreamFetcher` is used with a `Stream` source like a Web Socket.
 
 ```dart
   final futureFetcher = Fetcher.ofFuture<String, List<Tweet>>(
@@ -55,7 +55,7 @@ You can create a it from a `Future` or from a `Stream`.
 
 The `SourceOfTruth` is used to read and write the remote data in a local cache.
 
-Generally you implement the `SourceOfTruth` using a local database. However, if you are not using a local database / cache, the library provides the [`CachedSourceOfTruth`], a source of truth which stores the data in memory.   
+Generally you will implement the `SourceOfTruth` using a local database. However, if you are not using a local database / cache, the library provides the [`CachedSourceOfTruth`], a source of truth which stores the data in memory.   
 
 ```dart
   final sourceOfTruth = SourceOfTruth<String, List<Tweet>>(
@@ -70,7 +70,7 @@ _Note: to the proper operation, when `write` is invoked with new data, the sourc
 
 ### 3. Create the `Stock`
 
-`Stock` lets you to combine the different data sources and get the data.
+`Stock` lets you combine the different data sources and get the data.
 
 ```dart
  final store = Store<String, List<Tweet>>(
@@ -79,14 +79,14 @@ _Note: to the proper operation, when `write` is invoked with new data, the sourc
   );
 ```
 
-### Get a `Stream` data from Stock
+### Get a data `Stream` from Stock
 
 You can generate a data `Stream` using `stream()`.
 
-You need to invoke it with a specific `key`, and an optional `refresh` value that tells Stoke if refresh is optional or mandatory.
+You need to invoke it with a specific `key`, and an optional `refresh` value that tells Stock if a refresh is optional or mandatory.
 
-That returns a data steam of `StoreResponse`, which has 3 possible values:
-- `StoreResponseLoading` tells that a network request is in progress. It can be useful to display the loading spinner in your UI.
+That returns a data stream of `StoreResponse`, which has 3 possible values:
+- `StoreResponseLoading` informs that a network request is in progress. It can be useful to display a loading indicator in your UI.
 - `StoreResponseData` holds the response data. It has a `value` field which includes an instance of the type returned by `Stock`.
 - `StoreResponseError` indicates that an error happened.
 When an error happens, `Stock` does not throw an error, instead, it wraps it in this class.
@@ -112,8 +112,8 @@ Each `StoreResponse` includes an `origin` field which specifies where the event 
 
 Stock provides a couple of methods to get data without using a data stream.
 
-1. `get` returns cached data if it is cached otherwise will return fresh/network data (updating your caches).
-2. `fresh` returns fresh data updating your caches
+1. `get` returns cached data -if it is cached- otherwise will return fresh/network data (updating your caches).
+2. `fresh` returns fresh data updating your cache
 
 ```dart
   // Get fresh data
@@ -126,9 +126,9 @@ Stock provides a couple of methods to get data without using a data stream.
 
 ### Use different types for `Fetcher` and `SourceOfTruth`
 
-Sometimes you need to use different entities for Network and DB. For that case `Stock` provides the `StoreTypeMapper`, a class that transform one entity in the other.
+Sometimes you need to use different entities for Network and DB. For that case `Stock` provides the `StoreTypeMapper`, a class that transforms one entity into the other.
 
-`StoreTypeMapper` is used in the `SourceOfTruth` vie the method `mapToUsingMapper`
+`StoreTypeMapper` is used in the `SourceOfTruth` via the method `mapToUsingMapper`
 
 ```dart
 class TweetMapper implements StoreTypeMapper<DbTweet, NetworkTweet> {
