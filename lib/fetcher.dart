@@ -4,7 +4,7 @@ import 'package:stock/store_response.dart';
 
 /// Fetcher is used by [Store] to fetch network records of the type [Output]
 /// for a given key of the type [Key]. The return type is [Stream] to
-/// allow for multiple result per request.
+/// allow for multiple results per request.
 ///
 /// Note: Store does not catch exceptions thrown by a [Fetcher].
 /// Use [StoreResponseError] to communicate expected errors.
