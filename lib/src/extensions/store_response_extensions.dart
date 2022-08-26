@@ -8,7 +8,10 @@ extension StoreResponseExtensions<T> on StoreResponse<T> {
     } else if (isError) {
       var errorResponse = this as StoreResponseError<T>;
       return StoreResponse.error(
-          origin, errorResponse.error, errorResponse.stackTrace);
+        origin,
+        errorResponse.error,
+        errorResponse.stackTrace,
+      );
     } else if (isLoading) {
       return StoreResponse.loading(origin);
     } else {

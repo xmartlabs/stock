@@ -21,8 +21,11 @@ class StoreResponse<Output> {
       StoreResponseData<Output>;
 
   /// Error dispatched by a pipeline
-  const factory StoreResponse.error(ResponseOrigin origin, Object error,
-      [StackTrace? stackTrace]) = StoreResponseError<Output>;
+  const factory StoreResponse.error(
+    ResponseOrigin origin,
+    Object error, [
+    StackTrace? stackTrace,
+  ]) = StoreResponseError<Output>;
 }
 
 class StoreResponseLoading<T> extends StoreResponse<T> {
