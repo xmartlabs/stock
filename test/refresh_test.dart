@@ -25,7 +25,7 @@ void main() {
       expect(
           resultList,
           equals([
-            StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
+            const StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
           ]));
       verifyNever(fetcher.factory);
     });
@@ -44,8 +44,8 @@ void main() {
           resultList,
           equals([
             const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
+            const StoreResponse.data(ResponseOrigin.fetcher, 1),
           ]));
       verify(fetcher.factory).called(1);
     });
@@ -65,7 +65,7 @@ void main() {
           resultList,
           equals([
             const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StoreResponse.data(ResponseOrigin.fetcher, 1),
           ]));
       verify(fetcher.factory).called(1);
     });
@@ -89,7 +89,7 @@ void main() {
             StoreResponseError<int>(ResponseOrigin.sourceOfTruth,
                 SourceOfTruthWithError.readException),
             const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StoreResponse.data(ResponseOrigin.fetcher, 1),
           ]));
       verify(fetcher.factory).called(1);
     });
@@ -113,7 +113,7 @@ void main() {
             const StoreResponseLoading<int>(ResponseOrigin.fetcher),
             StoreResponseError<int>(ResponseOrigin.sourceOfTruth,
                 SourceOfTruthWithError.readException),
-            StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StoreResponse.data(ResponseOrigin.fetcher, 1),
           ]));
       verify(fetcher.factory).called(1);
     });
