@@ -22,8 +22,8 @@ void main() {
           resultList,
           equals([
             const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
+            const StoreResponse.data(ResponseOrigin.fetcher, 1),
           ]));
 
       resultList = await store.getFreshResultRemovingErrorStackTraces(2);
@@ -31,8 +31,8 @@ void main() {
           resultList,
           equals([
             const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            StoreResponse.data(ResponseOrigin.sourceOfTruth, -2),
-            StoreResponse.data(ResponseOrigin.fetcher, 2),
+            const StoreResponse.data(ResponseOrigin.sourceOfTruth, -2),
+            const StoreResponse.data(ResponseOrigin.fetcher, 2),
           ]));
     });
   });

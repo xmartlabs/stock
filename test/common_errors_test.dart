@@ -24,7 +24,7 @@ void main() {
             const StoreResponseLoading<int>(ResponseOrigin.fetcher),
             StoreResponseError<int>(ResponseOrigin.sourceOfTruth,
                 SourceOfTruthWithError.readException),
-            StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StoreResponse.data(ResponseOrigin.fetcher, 1),
           ]));
     });
 
@@ -42,7 +42,7 @@ void main() {
           resultList,
           equals([
             const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
+            const StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
             StoreResponseError<int>(
                 ResponseOrigin.fetcher, SourceOfTruthWithError.writeException),
           ]));
@@ -62,7 +62,7 @@ void main() {
           resultList,
           equals([
             const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
+            const StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
             StoreResponseError<int>(ResponseOrigin.fetcher, fetcherError),
           ]));
     });

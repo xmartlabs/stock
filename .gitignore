@@ -31,3 +31,6 @@ build/
 
 # Coverage
 /coverage
+
+# Lints
+/metrics

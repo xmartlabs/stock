@@ -8,7 +8,8 @@ abstract class StoreConverter<T0, T1> {
 
 extension SourceOfTruthExtensions<Key, Output1> on SourceOfTruth<Key, Output1> {
   SourceOfTruth<Key, Output2> mapTo<Output2>(
-          StoreConverter<Output1, Output2> converter) =>
+    StoreConverter<Output1, Output2> converter,
+  ) =>
       SourceOfTruth<Key, Output2>(
         reader: (key) => reader(key)
             .map((value) => value == null ? null : converter.fromT0(value)),
