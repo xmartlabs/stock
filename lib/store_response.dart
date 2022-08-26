@@ -8,11 +8,11 @@ part 'store_response.freezed.dart';
 /// Holder for responses from Store.
 ///
 /// Instead of using regular error channels (a.k.a. throwing exceptions), Store uses this holder
-/// class to represent each response. This allows the [Stream] to keep running even if an error happens
-/// so that if there is an observable single source of truth, application can keep observing it.
+/// class to represent each response. This allows the [Stream] to keep flowing even if an error happens
+/// so that if there is an observable single source of truth, the application can keep observing it.
 @freezed
 class StoreResponse<Output> with _$StoreResponse<Output> {
-  /// Loading event dispatched by [Store] to signal the [Fetcher] is in progress.
+  /// Loading event dispatched by [Store] to signal the [Fetcher] is currently running.
   @With<_ResponseWithOrigin>()
   const factory StoreResponse.loading(ResponseOrigin origin) =
       StoreResponseLoading<Output>;

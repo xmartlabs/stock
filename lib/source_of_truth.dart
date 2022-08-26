@@ -8,29 +8,29 @@ import 'package:stock/store.dart';
 import 'package:stock/store_extensions.dart';
 
 ///
-/// [SourceOfTruth], as name implies, is the persistence API which [Store] uses to serve values to
+/// [SourceOfTruth], as its name implies, is the persistence API which [Store] uses to serve values to
 /// the collectors. If provided, [Store] will only return values received from [SourceOfTruth] back
 /// to the collectors.
 ///
 /// In other words, values coming from the [Fetcher] will always be sent to the [SourceOfTruth]
-/// and will be read back via [reader] to be returned to the collector.
+/// and will be read back via [reader] to then be returned to the collector.
 ///
-/// This round-trip ensures the data is consistent across the application in case the [Fetcher] may
-/// not return all fields or return a different class type than the app uses. It is particularly
-/// useful if your application has a local observable database which is directly modified by the app
+/// This round-trip ensures the data is consistent across the application in case the [Fetcher] does
+/// not return all fields or returns a different class type than the app uses. It is particularly
+/// useful if your application has a local observable database which is directly modified by the app, 
 /// as Store can observe these changes and update the collectors even before value is synced to the
 /// backend.
 ///
-/// Source of truth takes care of making any source (no matter if it has flowing reads or not) into
+/// [SourceOfTruth] takes care of making any source (no matter if it has flowing reads or not) into
 /// a common flowing API.
 ///
-/// A source of truth is usually backed by local storage. It's purpose is to eliminate the need
-/// for waiting on network update before local modifications are available (via [Store.stream]).
+/// A source of truth is usually backed by local storage. Its purpose is to eliminate the need
+/// for waiting on a network update before local modifications are available (via [Store.stream]).
 ///
 /// For maximal simplicity, [writer]'s record type ([T]] and [reader]'s record type
-/// ([T]) are identical. However, sometimes read one type of objects from network and
-/// transform them to another type when placing them in local storage is needed.
-/// For this case you can use [mapTo] and [mapToUsingMapper] extensions.
+/// ([T]) are identical. However, sometimes reading one type of objects from network and
+/// transforming them to another type when placing them in local storage is needed.
+/// For this case you can use the [mapTo] and [mapToUsingMapper] extensions.
 ///
 abstract class SourceOfTruth<Key, T> {
   /// Creates a source of truth that is accessed via [reader] and [writer].

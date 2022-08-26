@@ -13,9 +13,9 @@ import 'package:stock/store_response.dart';
 /// See [ofStream], for easily translating to [StoreResponse] (and
 /// automatically transforming exceptions into [StoreResponseError].
 class Fetcher<Key, Output> {
-  /// "Creates" a [Fetcher] from a [futureFactory] and translate the results to a [StoreResponse].
+  /// "Creates" a [Fetcher] from a [futureFactory] and translates the results into a [StoreResponse].
   ///
-  /// Emitted values will be wrapped in [StoreResponseData]. if an exception disrupts the stream then
+  /// Emitted values will be wrapped in [StoreResponseData]. If an exception disrupts the stream then
   /// it will be wrapped in [StoreResponseError]
   ///
   /// Use when creating a [Store] that fetches objects in a single response per request
@@ -24,9 +24,9 @@ class Fetcher<Key, Output> {
           Future<Output> Function(Key key) futureFactory) =>
       FutureFetcher(futureFactory);
 
-  /// "Creates" a [Fetcher] from a [streamFactory] and translate the results to a [StoreResponse].
+  /// "Creates" a [Fetcher] from a [streamFactory] and translates the results into a [StoreResponse].
   ///
-  /// Emitted values will be wrapped in [StoreResponseData]. if an exception disrupts the flow then
+  /// Emitted values will be wrapped in [StoreResponseData]. If an exception disrupts the flow then
   /// it will be wrapped in [StoreResponseError].
   ///
   /// Use when creating a [Store] that fetches objects in a multiple responses per request
