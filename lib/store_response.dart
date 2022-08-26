@@ -5,14 +5,14 @@ import 'package:stock/store.dart';
 /// Holder for responses from Store.
 ///
 /// Instead of using regular error channels (a.k.a. throwing exceptions), Store uses this holder
-/// class to represent each response. This allows the [Stream] to keep running even if an error happens
-/// so that if there is an observable single source of truth, application can keep observing it.
+/// class to represent each response. This allows the [Stream] to keep flowing even if an error happens
+/// so that if there is an observable single source of truth, the application can keep observing it.
 class StoreResponse<Output> {
   final ResponseOrigin origin;
 
   const StoreResponse._(this.origin);
 
-  /// Loading event dispatched by [Store] to signal the [Fetcher] is in progress.
+  /// Loading event dispatched by [Store] to signal the [Fetcher] is currently running.
   const factory StoreResponse.loading(ResponseOrigin origin) =
       StoreResponseLoading<Output>;
 
@@ -97,9 +97,6 @@ class StoreResponseError<T> extends StoreResponse<T> {
 
 /// Represents the origin for a [StoreResponse].
 enum ResponseOrigin {
-  /// [StoreResponse] is sent from the cache
-  cache,
-
   /// [StoreResponse] is sent from the [SourceOfTruth]
   sourceOfTruth,
 

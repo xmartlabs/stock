@@ -63,28 +63,19 @@ class MockStreamFetcher<Key, Output> extends _i1.Mock
 /// A class which mocks [SourceOfTruth].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSourceOfTruth<Key, Output> extends _i1.Mock
-    implements _i4.SourceOfTruth<Key, Output> {
+class MockSourceOfTruth<Key, T> extends _i1.Mock
+    implements _i4.SourceOfTruth<Key, T> {
   MockSourceOfTruth() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Stream<Output?> Function(Key) get reader =>
-      (super.noSuchMethod(Invocation.getter(#reader),
-              returnValue: (Key key) => _i3.Stream<Output?>.empty())
-          as _i3.Stream<Output?> Function(Key));
+  _i3.Stream<T?> reader(Key? key) =>
+      (super.noSuchMethod(Invocation.method(#reader, [key]),
+          returnValue: _i3.Stream<T?>.empty()) as _i3.Stream<T?>);
   @override
-  set reader(_i3.Stream<Output?> Function(Key)? _reader) =>
-      super.noSuchMethod(Invocation.setter(#reader, _reader),
-          returnValueForMissingStub: null);
-  @override
-  _i3.Future<void> Function(Key, Output?) get writer => (super.noSuchMethod(
-          Invocation.getter(#writer),
-          returnValue: (Key key, Output? output) => _i3.Future<void>.value())
-      as _i3.Future<void> Function(Key, Output?));
-  @override
-  set writer(_i3.Future<void> Function(Key, Output?)? _writer) =>
-      super.noSuchMethod(Invocation.setter(#writer, _writer),
-          returnValueForMissingStub: null);
+  _i3.Future<void> write(Key? key, T? value) => (super.noSuchMethod(
+      Invocation.method(#write, [key, value]),
+      returnValue: _i3.Future<void>.value(),
+      returnValueForMissingStub: _i3.Future<void>.value()) as _i3.Future<void>);
 }

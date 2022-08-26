@@ -14,15 +14,14 @@ class DelayedSourceOfTruth<Key, T>
   ]) : super(cachedValue);
 
   @override
-  Stream<T?> generateReader(Key key) =>
-      super.generateReader(key).flatMap((response) async* {
+  Stream<T?> reader(Key key) => super.reader(key).flatMap((response) async* {
         await Future.delayed(readDelayTime);
         yield response;
       });
 
   @override
-  Future<void> generateWriter(Key key, T? value) async {
+  Future<void> write(Key key, T? value) async {
     await Future.delayed(readDelayTime);
-    await super.generateWriter(key, value);
+    await super.write(key, value);
   }
 }

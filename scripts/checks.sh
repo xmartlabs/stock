@@ -16,8 +16,7 @@ echo "$result"
 
 flutter pub run dart_code_metrics:metrics check-unused-code lib --fatal-unused || { echo -e "${RED}Linter error" ; exit 1; }
 
-# TODO: Enable it
-# flutter pub run dart_code_metrics:metrics check-unused-files lib  --fatal-unused || { echo -e "${RED}Linter error" ; exit 1; }
+flutter pub run dart_code_metrics:metrics check-unused-files lib  --fatal-unused || { echo -e "${RED}Linter error" ; exit 1; }
 
 echo ':: Run tests ::'
 flutter test || { echo -e "${RED}Test error" ; exit 1; }

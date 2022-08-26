@@ -15,8 +15,7 @@ class SourceOfTruthWithError<Key, T>
       : super(cachedValue);
 
   @override
-  Stream<T?> generateReader(Key key) =>
-      super.generateReader(key).flatMap((response) async* {
+  Stream<T?> reader(Key key) => super.reader(key).flatMap((response) async* {
         if (throwReadErrorCount > 0) {
           throwReadErrorCount--;
           throw readException;
@@ -25,11 +24,11 @@ class SourceOfTruthWithError<Key, T>
       });
 
   @override
-  Future<void> generateWriter(Key key, T? value) async {
+  Future<void> write(Key key, T? value) async {
     if (throwWriteErrorCount > 0) {
       throwWriteErrorCount--;
       throw writeException;
     }
-    await super.generateWriter(key, value);
+    await super.write(key, value);
   }
 }
