@@ -8,8 +8,7 @@ class CachedSourceOfTruthWithDefaultValue<Key, T>
   CachedSourceOfTruthWithDefaultValue([this._defaultValue]);
 
   @override
-  Stream<T?> generateReader(Key key) =>
-      super.generateReader(key).flatMap((response) async* {
+  Stream<T?> reader(Key key) => super.reader(key).flatMap((response) async* {
         yield response ?? _defaultValue;
       });
 }
