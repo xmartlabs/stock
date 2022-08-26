@@ -64,6 +64,8 @@ Generally you implement the `SourceOfTruth` using a local database. However, if 
   );
 ```
 
+In this example, `Fetcher` type is exactly the `SourceOfTruth` type. If you need to use multiple types, you can use the [`mapTo` extension](#use-different-types-for-fetcher-and-sourceoftruth).
+
 _Note: to the proper operation, when `write` is invoked with new data, the source of truth has to emit the new value in the `reader`._
 
 ### 3. Create the `Stock`
@@ -121,6 +123,36 @@ Stock provides a couple of methods to get data without using a data stream.
   final List<Tweet> cachedTweets = await store.get(key);
 ```
 
+
+### Use different types for `Fetcher` and `SourceOfTruth`
+
+Sometimes you need to use different entities for Network and DB. For that case `Stock` provides the `StoreTypeMapper`, a class that transform one entity in the other.
+
+`StoreTypeMapper` is used in the `SourceOfTruth` vie the method `mapToUsingMapper`
+
+```dart
+class TweetMapper implements StoreTypeMapper<DbTweet, NetworkTweet> {
+  @override
+  NetworkTweet fromInput(DbTweet value) => NetworkTweet(value);
+
+  @override
+  DbTweet fromOutput(NetworkTweet value) => DbTweet(value);
+}
+
+final SourceOfTruth<int, DbTweet> sot = _createMapper();
+final SourceOfTruth<int, NetworkTweet> newSot = sot.mapToUsingMapper(TweetMapper());
+```
+
+You can also achieve the same result using the `mapTo` extension.
+
+```dart
+
+final SourceOfTruth<int, DbTweet> sot = _createMapper();
+final SourceOfTruth<int, NetworkTweet> newSot = mapTo(
+      (networkTweet) => DbTweet(networkTweet),
+      (dbTweet) => NetworkTweet(dbTweet),
+);
+```
 
 ## Additional information
 
