@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stock/fetcher.dart';
-import 'package:stock/store.dart';
-import 'package:stock/store_response.dart';
+import 'package:stock/stock.dart';
+import 'package:stock/stock_response.dart';
 
 import 'common/source_of_truth/cached_and_mocked_source_of_truth.dart';
-import 'common/store_test_extensions.dart';
+import 'common/stock_test_extensions.dart';
 
 void main() {
   group('Multiple requests', () {
@@ -12,27 +12,27 @@ void main() {
       final sourceOfTruth =
           createMockedSourceOfTruthWithDefaultNegativeIntKey();
       final fetcher = Fetcher.ofFuture((int key) async => key);
-      final store = Store<int, int>(
+      final stock = Stock<int, int>(
         fetcher: fetcher,
         sourceOfTruth: sourceOfTruth,
       );
 
-      var resultList = await store.getFreshResultRemovingErrorStackTraces(1);
+      var resultList = await stock.getFreshResultRemovingErrorStackTraces(1);
       expect(
           resultList,
           equals([
-            const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            const StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            const StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StockResponseLoading<int>(ResponseOrigin.fetcher),
+            const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
+            const StockResponse.data(ResponseOrigin.fetcher, 1),
           ]));
 
-      resultList = await store.getFreshResultRemovingErrorStackTraces(2);
+      resultList = await stock.getFreshResultRemovingErrorStackTraces(2);
       expect(
           resultList,
           equals([
-            const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            const StoreResponse.data(ResponseOrigin.sourceOfTruth, -2),
-            const StoreResponse.data(ResponseOrigin.fetcher, 2),
+            const StockResponseLoading<int>(ResponseOrigin.fetcher),
+            const StockResponse.data(ResponseOrigin.sourceOfTruth, -2),
+            const StockResponse.data(ResponseOrigin.fetcher, 2),
           ]));
     });
   });

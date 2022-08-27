@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:stock/source_of_truth.dart';
-import 'package:stock/store.dart';
-import 'package:stock/store_response.dart';
+import 'package:stock/stock.dart';
+import 'package:stock/stock_response.dart';
 
 import 'common/source_of_truth/cached_source_of_truth_with_default_value.dart';
 import 'common/source_of_truth/source_of_truth_with_error.dart';
-import 'common/store_test_extensions.dart';
+import 'common/stock_test_extensions.dart';
 import 'common_mocks.mocks.dart';
 
 void main() {
@@ -16,16 +16,16 @@ void main() {
       var fetcher = MockFutureFetcher<int, int>();
       when(fetcher.factory).thenReturn((key) => Stream.value(1));
       final sourceOfTruth = CachedSourceOfTruthWithDefaultValue<int, int>(-1);
-      final store = Store<int, int>(
+      final stock = Stock<int, int>(
         fetcher: fetcher,
         sourceOfTruth: sourceOfTruth,
       );
 
-      final resultList = await store.getFreshResult(1, refresh: false);
+      final resultList = await stock.getFreshResult(1, refresh: false);
       expect(
           resultList,
           equals([
-            const StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
+            const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
           ]));
       verifyNever(fetcher.factory);
     });
@@ -34,18 +34,18 @@ void main() {
       var fetcher = MockFutureFetcher<int, int>();
       when(fetcher.factory).thenReturn((key) => Stream.value(1));
       final sourceOfTruth = CachedSourceOfTruthWithDefaultValue<int, int>(-1);
-      final store = Store<int, int>(
+      final stock = Stock<int, int>(
         fetcher: fetcher,
         sourceOfTruth: sourceOfTruth,
       );
 
-      final resultList = await store.getFreshResult(1, refresh: true);
+      final resultList = await stock.getFreshResult(1, refresh: true);
       expect(
           resultList,
           equals([
-            const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            const StoreResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            const StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StockResponseLoading<int>(ResponseOrigin.fetcher),
+            const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
+            const StockResponse.data(ResponseOrigin.fetcher, 1),
           ]));
       verify(fetcher.factory).called(1);
     });
@@ -55,17 +55,17 @@ void main() {
       var fetcher = MockFutureFetcher<int, int>();
       when(fetcher.factory).thenReturn((key) => Stream.value(1));
       final sourceOfTruth = CachedSourceOfTruth<int, int>(null);
-      final store = Store<int, int>(
+      final stock = Stock<int, int>(
         fetcher: fetcher,
         sourceOfTruth: sourceOfTruth,
       );
 
-      final resultList = await store.getFreshResult(1, refresh: false);
+      final resultList = await stock.getFreshResult(1, refresh: false);
       expect(
           resultList,
           equals([
-            const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            const StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StockResponseLoading<int>(ResponseOrigin.fetcher),
+            const StockResponse.data(ResponseOrigin.fetcher, 1),
           ]));
       verify(fetcher.factory).called(1);
     });
@@ -76,20 +76,20 @@ void main() {
       when(fetcher.factory).thenReturn((key) => Stream.value(1));
       final sourceOfTruth =
           SourceOfTruthWithError<int, int>(null, throwReadErrorCount: 1);
-      final store = Store<int, int>(
+      final stock = Stock<int, int>(
         fetcher: fetcher,
         sourceOfTruth: sourceOfTruth,
       );
 
       final resultList =
-          await store.getFreshResultRemovingErrorStackTraces(1, refresh: false);
+          await stock.getFreshResultRemovingErrorStackTraces(1, refresh: false);
       expect(
           resultList,
           equals([
-            StoreResponseError<int>(ResponseOrigin.sourceOfTruth,
+            StockResponseError<int>(ResponseOrigin.sourceOfTruth,
                 SourceOfTruthWithError.readException),
-            const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            const StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StockResponseLoading<int>(ResponseOrigin.fetcher),
+            const StockResponse.data(ResponseOrigin.fetcher, 1),
           ]));
       verify(fetcher.factory).called(1);
     });
@@ -100,20 +100,20 @@ void main() {
       when(fetcher.factory).thenReturn((key) => Stream.value(1));
       final sourceOfTruth =
           SourceOfTruthWithError<int, int>(null, throwReadErrorCount: 1);
-      final store = Store<int, int>(
+      final stock = Stock<int, int>(
         fetcher: fetcher,
         sourceOfTruth: sourceOfTruth,
       );
 
       final resultList =
-          await store.getFreshResultRemovingErrorStackTraces(1, refresh: true);
+          await stock.getFreshResultRemovingErrorStackTraces(1, refresh: true);
       expect(
           resultList,
           equals([
-            const StoreResponseLoading<int>(ResponseOrigin.fetcher),
-            StoreResponseError<int>(ResponseOrigin.sourceOfTruth,
+            const StockResponseLoading<int>(ResponseOrigin.fetcher),
+            StockResponseError<int>(ResponseOrigin.sourceOfTruth,
                 SourceOfTruthWithError.readException),
-            const StoreResponse.data(ResponseOrigin.fetcher, 1),
+            const StockResponse.data(ResponseOrigin.fetcher, 1),
           ]));
       verify(fetcher.factory).called(1);
     });

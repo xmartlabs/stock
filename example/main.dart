@@ -1,8 +1,8 @@
 import 'package:stock/fetcher.dart';
 import 'package:stock/source_of_truth.dart';
-import 'package:stock/src/extensions/store_response_extensions.dart';
-import 'package:stock/store.dart';
-import 'package:stock/store_response.dart';
+import 'package:stock/src/extensions/stock_response_extensions.dart';
+import 'package:stock/stock.dart';
+import 'package:stock/stock_response.dart';
 
 late TwitterApi _api;
 late TweetsLocalDatabase _database;
@@ -19,32 +19,32 @@ void main() async {
     writer: (userId, tweets) => _database.writeUserTweets(userId, tweets),
   );
 
-  // Create Store
-  final store = Store<String, List<Tweet>>(
+  // Create Stock
+  final stock = Stock<String, List<Tweet>>(
     fetcher: fetcher,
     sourceOfTruth: sourceOfTruth,
   );
 
   // Create a stream to listen tweet changes of the user `xmartlabs`
-  store
+  stock
       .stream('xmartlabs', refresh: true)
-      .listen((StoreResponse<List<Tweet>> storeResponse) {
-    if (storeResponse is StoreResponseLoading) {
+      .listen((StockResponse<List<Tweet>> stockResponse) {
+    if (stockResponse is StockResponseLoading) {
       _displayLoadingIndicator();
-    } else if (storeResponse is StoreResponseData) {
-      _displayTweetsInUI(storeResponse.data);
+    } else if (stockResponse is StockResponseData) {
+      _displayTweetsInUI(stockResponse.data);
     } else {
-      _displayErrorInUi((storeResponse as StoreResponseError).error);
+      _displayErrorInUi((stockResponse as StockResponseError).error);
     }
   });
 
   // Get Xmartlabs tweets from the network and save them in the DB.
-  final List<Tweet> freshTweets = await store.fresh('xmartlabs');
+  final List<Tweet> freshTweets = await stock.fresh('xmartlabs');
 
   // Get Xmartlabs tweets
   // It will try to use Local Database Tweets.
   // However, if the DB tweets are empty, it will fetch new tweets from the fetcher, and save them in the DB.
-  final List<Tweet> cachedTweets = await store.get('xmartlabs');
+  final List<Tweet> cachedTweets = await stock.get('xmartlabs');
 }
 
 void _displayTweetsInUI(List<Tweet>? tweets) {}

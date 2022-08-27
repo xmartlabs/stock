@@ -1,7 +1,7 @@
-import 'package:stock/store_response.dart';
+import 'package:stock/stock_response.dart';
 
-extension ResponseExtensions<T> on StoreResponse<T> {
-  StoreResponse<T> removeStacktraceIfNeeded() => this is StoreResponseError<T>
-      ? StoreResponse.error(origin, (this as StoreResponseError<T>).error)
+extension ResponseExtensions<T> on StockResponse<T> {
+  StockResponse<T> removeStacktraceIfNeeded() => this is StockResponseError<T>
+      ? StockResponse.error(origin, (this as StockResponseError<T>).error)
       : this;
 }

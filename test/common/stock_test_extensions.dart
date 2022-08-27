@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:stock/store.dart';
-import 'package:stock/store_response.dart';
+import 'package:stock/stock.dart';
+import 'package:stock/stock_response.dart';
 
 import 'response_extensions.dart';
 
-extension StoreExtensions<Key, Output> on Store<Key, Output> {
-  Future<List<StoreResponse<Output>>> getFreshResult(
+extension StockExtensions<Key, Output> on Stock<Key, Output> {
+  Future<List<StockResponse<Output>>> getFreshResult(
     Key key, {
     refresh = true,
     Duration delay = const Duration(milliseconds: 100),
@@ -16,7 +16,7 @@ extension StoreExtensions<Key, Output> on Store<Key, Output> {
     return await resultListener.stopAndGetResult();
   }
 
-  Future<List<StoreResponse<Output>>> getFreshResultRemovingErrorStackTraces(
+  Future<List<StockResponse<Output>>> getFreshResultRemovingErrorStackTraces(
     Key key, {
     refresh = true,
     Duration delay = const Duration(milliseconds: 100),

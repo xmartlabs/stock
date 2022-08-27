@@ -1,44 +1,44 @@
 import 'package:stock/fetcher.dart';
 import 'package:stock/source_of_truth.dart';
-import 'package:stock/store.dart';
+import 'package:stock/stock.dart';
 
-/// Holder for responses from Store.
+/// Holder for responses from Stock.
 ///
-/// Instead of using regular error channels (a.k.a. throwing exceptions), Store uses this holder
+/// Instead of using regular error channels (a.k.a. throwing exceptions), Stock uses this holder
 /// class to represent each response. This allows the [Stream] to keep flowing even if an error happens
 /// so that if there is an observable single source of truth, the application can keep observing it.
-class StoreResponse<Output> {
+class StockResponse<Output> {
   final ResponseOrigin origin;
 
-  const StoreResponse._(this.origin);
+  const StockResponse._(this.origin);
 
-  /// Loading event dispatched by [Store] to signal the [Fetcher] is currently running.
-  const factory StoreResponse.loading(ResponseOrigin origin) =
-      StoreResponseLoading<Output>;
+  /// Loading event dispatched by [Stock] to signal the [Fetcher] is currently running.
+  const factory StockResponse.loading(ResponseOrigin origin) =
+      StockResponseLoading<Output>;
 
-  /// Data dispatched by [Store]
-  const factory StoreResponse.data(ResponseOrigin origin, Output value) =
-      StoreResponseData<Output>;
+  /// Data dispatched by [Stock]
+  const factory StockResponse.data(ResponseOrigin origin, Output value) =
+      StockResponseData<Output>;
 
   /// Error dispatched by a pipeline
-  const factory StoreResponse.error(
+  const factory StockResponse.error(
     ResponseOrigin origin,
     Object error, [
     StackTrace? stackTrace,
-  ]) = StoreResponseError<Output>;
+  ]) = StockResponseError<Output>;
 }
 
-class StoreResponseLoading<T> extends StoreResponse<T> {
-  const StoreResponseLoading(origin) : super._(origin);
+class StockResponseLoading<T> extends StockResponse<T> {
+  const StockResponseLoading(origin) : super._(origin);
 
   @override
-  String toString() => 'StoreResponse<$T>.loading(origin: $origin)';
+  String toString() => 'StockResponse<$T>.loading(origin: $origin)';
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is StoreResponseLoading<T> &&
+            other is StockResponseLoading<T> &&
             origin == other.origin);
   }
 
@@ -46,19 +46,19 @@ class StoreResponseLoading<T> extends StoreResponse<T> {
   int get hashCode => Object.hash(runtimeType, origin.hashCode);
 }
 
-class StoreResponseData<T> extends StoreResponse<T> {
+class StockResponseData<T> extends StockResponse<T> {
   final T value;
 
-  const StoreResponseData(ResponseOrigin origin, this.value) : super._(origin);
+  const StockResponseData(ResponseOrigin origin, this.value) : super._(origin);
 
   @override
-  String toString() => 'StoreResponse<$T>.data(origin: $origin, value: $value)';
+  String toString() => 'StockResponse<$T>.data(origin: $origin, value: $value)';
 
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other.runtimeType == runtimeType &&
-          other is StoreResponseData<T> &&
+          other is StockResponseData<T> &&
           other.origin == origin &&
           other.value == value);
 
@@ -66,22 +66,22 @@ class StoreResponseData<T> extends StoreResponse<T> {
   int get hashCode => Object.hash(runtimeType, origin.hashCode, value.hashCode);
 }
 
-class StoreResponseError<T> extends StoreResponse<T> {
+class StockResponseError<T> extends StockResponse<T> {
   final Object error;
   final StackTrace? stackTrace;
 
-  const StoreResponseError(ResponseOrigin origin, this.error, [this.stackTrace])
+  const StockResponseError(ResponseOrigin origin, this.error, [this.stackTrace])
       : super._(origin);
 
   @override
   String toString() =>
-      'StoreResponse<$T>.error(origin: $origin, error: $error, stackTrace: $stackTrace)';
+      'StockResponse<$T>.error(origin: $origin, error: $error, stackTrace: $stackTrace)';
 
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other.runtimeType == runtimeType &&
-          other is StoreResponseError<T> &&
+          other is StockResponseError<T> &&
           other.origin == origin &&
           other.error == error &&
           other.stackTrace == stackTrace);
@@ -95,11 +95,11 @@ class StoreResponseError<T> extends StoreResponse<T> {
       );
 }
 
-/// Represents the origin for a [StoreResponse].
+/// Represents the origin for a [StockResponse].
 enum ResponseOrigin {
-  /// [StoreResponse] is sent from the [SourceOfTruth]
+  /// [StockResponse] is sent from the [SourceOfTruth]
   sourceOfTruth,
 
-  /// [StoreResponse] is sent from a [Fetcher],
+  /// [StockResponse] is sent from a [Fetcher],
   fetcher,
 }

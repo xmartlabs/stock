@@ -1,38 +1,38 @@
 import 'package:stock/src/factory_fetcher.dart';
-import 'package:stock/store.dart';
-import 'package:stock/store_response.dart';
+import 'package:stock/stock.dart';
+import 'package:stock/stock_response.dart';
 
-/// Fetcher is used by [Store] to fetch network records of the type [Output]
+/// Fetcher is used by [Stock] to fetch network records of the type [Output]
 /// for a given key of the type [Key]. The return type is [Stream] to
 /// allow for multiple results per request.
 ///
-/// Note: Store does not catch exceptions thrown by a [Fetcher].
-/// Use [StoreResponseError] to communicate expected errors.
+/// Note: [Stock] does not catch exceptions thrown by a [Fetcher].
+/// Use [StockResponseError] to communicate expected errors.
 ///
 /// See [ofFuture] for easily translating from a regular `Future` function.
-/// See [ofStream], for easily translating to [StoreResponse] (and
-/// automatically transforming exceptions into [StoreResponseError].
+/// See [ofStream], for easily translating to [StockResponse] (and
+/// automatically transforming exceptions into [StockResponseError].
 abstract class Fetcher<Key, Output> {
   Fetcher._();
 
-  /// "Creates" a [Fetcher] from a [futureFactory] and translates the results into a [StoreResponse].
+  /// "Creates" a [Fetcher] from a [futureFactory] and translates the results into a [StockResponse].
   ///
-  /// Emitted values will be wrapped in [StoreResponseData]. If an exception disrupts the stream then
-  /// it will be wrapped in [StoreResponseError]
+  /// Emitted values will be wrapped in [StockResponseData]. If an exception disrupts the stream then
+  /// it will be wrapped in [StockResponseError]
   ///
-  /// Use when creating a [Store] that fetches objects in a single response per request
+  /// Use when creating a [Stock] that fetches objects in a single response per request
   /// network protocol (e.g Http).
   static Fetcher<Key, Output> ofFuture<Key, Output>(
     Future<Output> Function(Key key) futureFactory,
   ) =>
       FutureFetcher(futureFactory);
 
-  /// "Creates" a [Fetcher] from a [streamFactory] and translates the results into a [StoreResponse].
+  /// "Creates" a [Fetcher] from a [streamFactory] and translates the results into a [StockResponse].
   ///
-  /// Emitted values will be wrapped in [StoreResponseData]. If an exception disrupts the flow then
-  /// it will be wrapped in [StoreResponseError].
+  /// Emitted values will be wrapped in [StockResponseData]. If an exception disrupts the flow then
+  /// it will be wrapped in [StockResponseError].
   ///
-  /// Use when creating a [Store] that fetches objects in a multiple responses per request
+  /// Use when creating a [Stock] that fetches objects in a multiple responses per request
   /// network protocol (e.g Web Sockets).
   static Fetcher<Key, Output> ofStream<Key, Output>(
     Stream<Output> Function(Key key) streamFactory,

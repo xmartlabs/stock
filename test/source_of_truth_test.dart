@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stock/source_of_truth.dart';
 
-import 'common/store_test_extensions.dart';
+import 'common/stock_test_extensions.dart';
 
 void main() {
   group("Cached SOT", () {
