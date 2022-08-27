@@ -158,7 +158,7 @@ final SourceOfTruth<int, NetworkTweet> newSot = mapTo(
 
 For bugs please use [GitHub Issues](https://github.com/xmartlabs/stock/issues). For questions, ideas, and discussions use [GitHub Discussions](https://github.com/xmartlabs/stock/discussions).
 
-Made with ❤️ by [Xmartlabs](http://xmartlabs.com).
+Made with ❤️ by [Xmartlabs](https://xmartlabs.com).
 
 ## License
 

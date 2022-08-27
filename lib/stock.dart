@@ -1,6 +1,6 @@
 /// A Dart package for Async Data Loading and Caching,
 ///
-/// A open source project made with ❤️ by [Xmartlabs](http://xmartlabs.com).
+/// A open source project made with ❤️ by [Xmartlabs](https://xmartlabs.com).
 library stock;
 
 export 'src/errors.dart';
