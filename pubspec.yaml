@@ -1,17 +1,16 @@
 name: stock
-description: Dart Library for Async Data Loading and Caching
+description: A Dart package for Async Data Loading and Caching
 version: 0.0.1
 homepage: https://github.com/xmartlabs/stock
 
 environment:
-  sdk: '>=2.17.0 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  async: 2.8.2
-  mutex: 3.0.0
-  rxdart: 0.27.5
+  mutex: ^3.0.0
+  rxdart: ^0.27.0
 
 dev_dependencies:
   flutter_test:
