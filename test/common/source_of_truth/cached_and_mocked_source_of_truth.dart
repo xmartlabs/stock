@@ -1,6 +1,6 @@
 import 'package:mockito/mockito.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:stock/source_of_truth.dart';
+import 'package:stock/src/source_of_truth.dart';
 
 import '../../common_mocks.mocks.dart';
 import 'cached_source_of_truth_with_default_value.dart';

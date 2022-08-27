@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stock/errors.dart';
-import 'package:stock/src/extensions/stock_response_extensions.dart';
-import 'package:stock/stock_response.dart';
+import 'package:stock/src/errors.dart';
+import 'package:stock/src/stock_response.dart';
+import 'package:stock/src/stock_response_extensions.dart';
 
 void main() {
   group('Require data extensions', () {
@@ -33,19 +33,19 @@ void main() {
     test('getData of an error returns null', () async {
       final customEx = Exception("Custom ex");
       expect(
-        StockResponse.error(ResponseOrigin.fetcher, customEx).data,
+        StockResponse.error(ResponseOrigin.fetcher, customEx).getDataOrNull(),
         equals(null),
       );
     });
     test('getData of a loading response returns null', () async {
       expect(
-        const StockResponse.loading(ResponseOrigin.fetcher).data,
+        const StockResponse.loading(ResponseOrigin.fetcher).getDataOrNull(),
         equals(null),
       );
     });
     test('getData of a data response returns the data', () async {
       expect(
-        const StockResponse.data(ResponseOrigin.fetcher, 1).data,
+        const StockResponse.data(ResponseOrigin.fetcher, 1).getDataOrNull(),
         equals(1),
       );
     });

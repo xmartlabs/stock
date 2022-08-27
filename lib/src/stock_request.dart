@@ -1,6 +1,6 @@
-import 'package:stock/fetcher.dart';
-import 'package:stock/source_of_truth.dart';
-import 'package:stock/stock.dart';
+import 'package:stock/src/fetcher.dart';
+import 'package:stock/src/source_of_truth.dart';
+import 'package:stock/src/stock.dart';
 
 /// Represents a single [Stock] request
 ///

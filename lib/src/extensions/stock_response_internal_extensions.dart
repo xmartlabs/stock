@@ -1,5 +1,6 @@
-import 'package:stock/errors.dart';
-import 'package:stock/stock_response.dart';
+import 'package:stock/src/errors.dart';
+import 'package:stock/src/stock_response.dart';
+import 'package:stock/src/stock_response_extensions.dart';
 
 extension StockResponseExtensions<T> on StockResponse<T> {
   StockResponse<R> swapType<R>() {
@@ -18,26 +19,6 @@ extension StockResponseExtensions<T> on StockResponse<T> {
       throw StockError('Unknown type');
     }
   }
-
-  T requireData() {
-    if (this is StockResponseData<T>) {
-      return (this as StockResponseData<T>).value;
-    } else if (isError) {
-      throw (this as StockResponseError<T>).error;
-    } else if (isLoading) {
-      throw StockError('There is no data in loading');
-    } else {
-      throw StockError('Unknown type');
-    }
-  }
-
-  T? get data => this is StockResponseData<T>
-      ? (this as StockResponseData<T>).value
-      : null;
-
-  bool get isLoading => this is StockResponseLoading;
-
-  bool get isError => this is StockResponseError;
 }
 
 extension StockResponseStreamExtensions<T> on Stream<StockResponse<T?>> {

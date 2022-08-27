@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:stock/stock.dart';
-import 'package:stock/stock_response.dart';
+import 'package:stock/src/stock.dart';
+import 'package:stock/src/stock_response.dart';
 
 import 'response_extensions.dart';
 

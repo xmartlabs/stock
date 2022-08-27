@@ -6,7 +6,7 @@ It is inspired by the [Store] Kotlin library.
 Its main goal is to prevent excessive calls to the network and disk cache. 
 By utilizing it, you eliminate the possibility of flooding your network with the same request while, at the same time, adding layers of caching.
 
-Although you can use it without a local source, the greatest benefit comes from combining Stock with a local database such as [Floor], [Drift], [sqflite], [Realm], etc. 
+Although you can use it without a local source, the greatest benefit comes from combining Stock with a local database such as [Floor], [Drift], [Sqflite], [Realm], etc. 
 
 ## Features
 
@@ -181,7 +181,7 @@ Made with ❤️ by [Xmartlabs](http://xmartlabs.com).
 [Drift]: https://pub.dev/packages/drift
 [sqflite]: https://pub.dev/packages/sqflite
 [Realm]: https://pub.dev/packages/realm
-[`Stock`]: lib/stock.dart
-[`Fetcher`]: lib/fetcher.dart
-[`SourceOfTruth`]: lib/source_of_truth.dart
-[`CachedSourceOfTruth`]: lib/source_of_truth.dart
+[`Stock`]: lib/src/stock.dart
+[`Fetcher`]: lib/src/fetcher.dart
+[`SourceOfTruth`]: lib/src/source_of_truth.dart
+[`CachedSourceOfTruth`]: lib/src/source_of_truth.dart

@@ -1,6 +1,6 @@
-import 'package:stock/fetcher.dart';
-import 'package:stock/source_of_truth.dart';
-import 'package:stock/stock.dart';
+import 'package:stock/src/fetcher.dart';
+import 'package:stock/src/source_of_truth.dart';
+import 'package:stock/src/stock.dart';
 
 /// Holder for responses from Stock.
 ///
@@ -28,6 +28,7 @@ class StockResponse<Output> {
   ]) = StockResponseError<Output>;
 }
 
+/// Loading event dispatched by [Stock] to signal the [Fetcher] is currently running.
 class StockResponseLoading<T> extends StockResponse<T> {
   const StockResponseLoading(origin) : super._(origin);
 
@@ -46,6 +47,7 @@ class StockResponseLoading<T> extends StockResponse<T> {
   int get hashCode => Object.hash(runtimeType, origin.hashCode);
 }
 
+/// Data dispatched by [Stock]
 class StockResponseData<T> extends StockResponse<T> {
   final T value;
 
@@ -66,6 +68,7 @@ class StockResponseData<T> extends StockResponse<T> {
   int get hashCode => Object.hash(runtimeType, origin.hashCode, value.hashCode);
 }
 
+/// Error dispatched by a pipeline
 class StockResponseError<T> extends StockResponse<T> {
   final Object error;
   final StackTrace? stackTrace;

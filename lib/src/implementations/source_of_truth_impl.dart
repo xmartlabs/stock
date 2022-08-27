@@ -1,4 +1,4 @@
-import 'package:stock/source_of_truth.dart';
+import 'package:stock/src/source_of_truth.dart';
 
 class SourceOfTruthImpl<Key, T> implements SourceOfTruth<Key, T> {
   final Stream<T?> Function(Key key) _reader;

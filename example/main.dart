@@ -1,8 +1,4 @@
-import 'package:stock/fetcher.dart';
-import 'package:stock/source_of_truth.dart';
-import 'package:stock/src/extensions/stock_response_extensions.dart';
 import 'package:stock/stock.dart';
-import 'package:stock/stock_response.dart';
 
 late TwitterApi _api;
 late TweetsLocalDatabase _database;
@@ -32,7 +28,7 @@ void main() async {
     if (stockResponse is StockResponseLoading) {
       _displayLoadingIndicator();
     } else if (stockResponse is StockResponseData) {
-      _displayTweetsInUI(stockResponse.data);
+      _displayTweetsInUI(stockResponse.requireData());
     } else {
       _displayErrorInUi((stockResponse as StockResponseError).error);
     }

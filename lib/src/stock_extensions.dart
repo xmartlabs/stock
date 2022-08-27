@@ -1,4 +1,4 @@
-import 'package:stock/type_mapper.dart';
+import 'package:stock/src/type_mapper.dart';
 
 import 'source_of_truth.dart';
 

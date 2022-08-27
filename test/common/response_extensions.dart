@@ -1,4 +1,4 @@
-import 'package:stock/stock_response.dart';
+import 'package:stock/src/stock_response.dart';
 
 extension ResponseExtensions<T> on StockResponse<T> {
   StockResponse<T> removeStacktraceIfNeeded() => this is StockResponseError<T>

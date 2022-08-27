@@ -1,5 +1,5 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:stock/stock_response.dart';
+import 'package:stock/src/stock_response.dart';
 
 extension StreamExtensions<T> on Stream<T> {
   Stream<StockResponse<T>> mapToResponse(ResponseOrigin origin) =>

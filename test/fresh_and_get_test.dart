@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:stock/stock.dart';
+import 'package:stock/src/stock.dart';
 
 import 'common/source_of_truth/cached_and_mocked_source_of_truth.dart';
 import 'common_mocks.mocks.dart';

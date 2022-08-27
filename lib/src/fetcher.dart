@@ -1,8 +1,8 @@
-import 'package:stock/src/factory_fetcher.dart';
-import 'package:stock/stock.dart';
-import 'package:stock/stock_response.dart';
+import 'package:stock/src/implementations/factory_fetcher.dart';
+import 'package:stock/src/stock.dart';
+import 'package:stock/src/stock_response.dart';
 
-/// Fetcher is used by [Stock] to fetch network records of the type [Output]
+/// Fetcher is used by [Stock] to fetch network records of the type [T]
 /// for a given key of the type [Key]. The return type is [Stream] to
 /// allow for multiple results per request.
 ///
@@ -12,7 +12,7 @@ import 'package:stock/stock_response.dart';
 /// See [ofFuture] for easily translating from a regular `Future` function.
 /// See [ofStream], for easily translating to [StockResponse] (and
 /// automatically transforming exceptions into [StockResponseError].
-abstract class Fetcher<Key, Output> {
+abstract class Fetcher<Key, T> {
   Fetcher._();
 
   /// "Creates" a [Fetcher] from a [futureFactory] and translates the results into a [StockResponse].

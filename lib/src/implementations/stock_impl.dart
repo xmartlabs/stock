@@ -2,15 +2,16 @@ import 'dart:async';
 
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:stock/fetcher.dart';
-import 'package:stock/source_of_truth.dart';
-import 'package:stock/src/extensions/future_stream_extensions.dart';
-import 'package:stock/src/extensions/stock_response_extensions.dart';
-import 'package:stock/src/factory_fetcher.dart';
-import 'package:stock/src/source_of_truth_impl.dart';
-import 'package:stock/stock.dart';
-import 'package:stock/stock_request.dart';
-import 'package:stock/stock_response.dart';
+import 'package:stock/src/fetcher.dart';
+import 'package:stock/src/source_of_truth.dart';
+import 'package:stock/src/extensions/future_stream_internal_extensions.dart';
+import 'package:stock/src/extensions/stock_response_internal_extensions.dart';
+import 'package:stock/src/implementations/factory_fetcher.dart';
+import 'package:stock/src/implementations/source_of_truth_impl.dart';
+import 'package:stock/src/stock.dart';
+import 'package:stock/src/stock_request.dart';
+import 'package:stock/src/stock_response.dart';
+import 'package:stock/src/stock_response_extensions.dart';
 
 class StockImpl<Key, Output> implements Stock<Key, Output> {
   final FactoryFetcher<Key, Output> _fetcher;
@@ -146,7 +147,7 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
         .where((event) => event.origin == ResponseOrigin.sourceOfTruth)
         .where((event) => !event.isLoading)
         .first
-        .then((value) => value.data == null);
+        .then((value) => value.getDataOrNull() == null);
   }
 
   StreamSubscription _generateSourceOfTruthStreamSubscription({
