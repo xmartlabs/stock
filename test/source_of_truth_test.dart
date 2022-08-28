@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:stock/src/source_of_truth.dart';
+import 'package:test/test.dart';
 
 import 'common/stock_test_extensions.dart';
 

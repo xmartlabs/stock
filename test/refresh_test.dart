@@ -1,8 +1,8 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:stock/src/source_of_truth.dart';
 import 'package:stock/src/stock.dart';
 import 'package:stock/src/stock_response.dart';
+import 'package:test/test.dart';
 
 import 'common/source_of_truth/cached_source_of_truth_with_default_value.dart';
 import 'common/source_of_truth/source_of_truth_with_error.dart';

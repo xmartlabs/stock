@@ -1,7 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:stock/src/errors.dart';
 import 'package:stock/src/stock_response.dart';
 import 'package:stock/src/stock_response_extensions.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('Require data extensions', () {
