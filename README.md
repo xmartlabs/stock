@@ -154,6 +154,45 @@ final SourceOfTruth<int, NetworkTweet> newSot = mapTo(
 );
 ```
 
+### Use a non-stream source of truth
+
+Sometimes your Source of Truth does not provide you with a real-time data stream.
+For example, suppose that you are using [shared_preferences] to store your data, or you are just catching your data in memory.
+For these cases, `Stock` provides you the `CachedSourceOfThruth`, a `SourceOfThruth` that be helpful in these cases.
+
+```dart
+class SharedPreferencesSourceOfTruth extends CachedSourceOfTruth<String, String> {
+  SharedPreferencesSourceOfTruth();
+
+  @override
+  @protected
+  Stream<T?> reader(String key) async* {
+    final prefs = await SharedPreferences.getInstance();
+    // Read data from an non-stream source
+    final stringValue = prefs.getString(key);
+    setCachedValue(key, stringValue);
+    yield* super.reader(key);
+  }
+
+  @override
+  @protected
+  Future<void> write(String key, String? value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(key, value);
+    await super.write(key, value);
+  }
+}
+```
+
+This class can be used with `StockTypeMapper` to transform your data into an entity.
+
+```dart
+// The mapper json to transform a string into a User 
+final StockTypeMapper<String, User> mapper = _createUserMapper();
+final SharedPreferencesSourceOfTruth<String, User> = SharedPreferencesSourceOfTruth()
+    .mapToUsingMapper(mapper);
+```
+
 ## Additional information
 
 For bugs please use [GitHub Issues](https://github.com/xmartlabs/stock/issues). For questions, ideas, and discussions use [GitHub Discussions](https://github.com/xmartlabs/stock/discussions).
@@ -185,3 +224,4 @@ Made with ❤️ by [Xmartlabs](http://xmartlabs.com).
 [`Fetcher`]: lib/fetcher.dart
 [`SourceOfTruth`]: lib/source_of_truth.dart
 [`CachedSourceOfTruth`]: lib/source_of_truth.dart
+[shared_preferences]: https://pub.dev/packages/shared_preferences
