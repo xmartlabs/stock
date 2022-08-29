@@ -12,7 +12,9 @@ import 'package:stock/store_response.dart';
 /// See [ofFuture] for easily translating from a regular `Future` function.
 /// See [ofStream], for easily translating to [StoreResponse] (and
 /// automatically transforming exceptions into [StoreResponseError].
-class Fetcher<Key, Output> {
+abstract class Fetcher<Key, Output> {
+  Fetcher._();
+
   /// "Creates" a [Fetcher] from a [futureFactory] and translates the results into a [StoreResponse].
   ///
   /// Emitted values will be wrapped in [StoreResponseData]. If an exception disrupts the stream then
