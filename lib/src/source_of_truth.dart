@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 import 'package:stock/src/fetcher.dart';
 import 'package:stock/src/common/key_value.dart';
 import 'package:stock/src/implementations/source_of_truth_impl.dart';

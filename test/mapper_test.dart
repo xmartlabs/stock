@@ -1,7 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:stock/src/source_of_truth.dart';
 import 'package:stock/src/stock_extensions.dart';
 import 'package:stock/src/type_mapper.dart';
+import 'package:test/test.dart';
 
 void main() {
   group("Mapper test", () {
