@@ -224,4 +224,4 @@ Made with ❤️ by [Xmartlabs](https://xmartlabs.com).
 [`SourceOfTruth`]: lib/src/source_of_truth.dart
 [`Stock`]: lib/src/stock.dart
 [shared_preferences]: https://pub.dev/packages/shared_preferences
-[sqflite]: https://pub.dev/packages/sqflite
+[Sqflite]: https://pub.dev/packages/sqflite
