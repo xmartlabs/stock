@@ -81,7 +81,7 @@ void main() {
         equals(true),
       );
     });
-    test('Data returns true if is a data event', () async {
+    test('Data returns true if it is a data event', () async {
       expect(
         StockResponse.error(ResponseOrigin.fetcher, Error()).isData,
         equals(false),
