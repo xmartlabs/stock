@@ -16,7 +16,9 @@ extension StockResponseExtensions<T> on StockResponse<T> {
     } else if (isLoading) {
       return StockResponse.loading(origin);
     } else {
-      throw StockError('Unknown type');
+      throw StockError(
+        'Type error swapType expect either Success, Error or Loading but was given $runtimeType',
+      );
     }
   }
 }
