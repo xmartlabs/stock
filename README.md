@@ -89,7 +89,7 @@ That returns a data stream of `StockResponse`, which has 3 possible values:
 - `StockResponseLoading` informs that a network request is in progress. It can be useful to display a loading indicator in your UI.
 - `StockResponseData` holds the response data. It has a `value` field which includes an instance of the type returned by `Stock`.
 - `StockResponseError` indicates that an error happened.
-When an error happens, `Stock` does not throw an error, instead, it wraps it in this class.
+When an error happens, `Stock` does not throw an exception, instead, it wraps it in this class.
 It includes an `error` field that contains the exception thrown by the given `origin`.
 
 Each `StockResponse` includes an `origin` field which specifies where the event is coming from. 
@@ -154,6 +154,45 @@ final SourceOfTruth<int, NetworkTweet> newSot = mapTo(
 );
 ```
 
+### Use a non-stream source of truth
+
+Sometimes your Source of Truth does not provide you with a real-time data stream.
+For example, suppose that you are using [shared_preferences] to store your data, or you are just catching your data in memory.
+For these cases, `Stock` provides you the `CachedSourceOfThruth`, a `SourceOfThruth` that be helpful in these cases.
+
+```dart
+class SharedPreferencesSourceOfTruth extends CachedSourceOfTruth<String, String> {
+  SharedPreferencesSourceOfTruth();
+
+  @override
+  @protected
+  Stream<T?> reader(String key) async* {
+    final prefs = await SharedPreferences.getInstance();
+    // Read data from an non-stream source
+    final stringValue = prefs.getString(key);
+    setCachedValue(key, stringValue);
+    yield* super.reader(key);
+  }
+
+  @override
+  @protected
+  Future<void> write(String key, String? value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(key, value);
+    await super.write(key, value);
+  }
+}
+```
+
+This class can be used with `StockTypeMapper` to transform your data into an entity.
+
+```dart
+// The mapper json to transform a string into a User 
+final StockTypeMapper<String, User> mapper = _createUserMapper();
+final SharedPreferencesSourceOfTruth<String, User> = SharedPreferencesSourceOfTruth()
+    .mapToUsingMapper(mapper);
+```
+
 ## Additional information
 
 For bugs please use [GitHub Issues](https://github.com/xmartlabs/stock/issues). For questions, ideas, and discussions use [GitHub Discussions](https://github.com/xmartlabs/stock/discussions).
@@ -176,12 +215,13 @@ Made with ❤️ by [Xmartlabs](https://xmartlabs.com).
     See the License for the specific language governing permissions and
     limitations under the License.
 
-[Store]: https://github.com/MobileNativeFoundation/Store
-[Floor]: https://pub.dev/packages/floor
 [Drift]: https://pub.dev/packages/drift
-[sqflite]: https://pub.dev/packages/sqflite
+[Floor]: https://pub.dev/packages/floor
 [Realm]: https://pub.dev/packages/realm
-[`Stock`]: lib/src/stock.dart
+[Store]: https://github.com/MobileNativeFoundation/Store
+[`CachedSourceOfTruth`]: lib/src/source_of_truth.dart
 [`Fetcher`]: lib/src/fetcher.dart
 [`SourceOfTruth`]: lib/src/source_of_truth.dart
-[`CachedSourceOfTruth`]: lib/src/source_of_truth.dart
+[`Stock`]: lib/src/stock.dart
+[shared_preferences]: https://pub.dev/packages/shared_preferences
+[sqflite]: https://pub.dev/packages/sqflite
