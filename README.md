@@ -37,7 +37,7 @@ To use this package, add `stock` as a [dependency in your pubspec.yaml file](htt
 ### 1. Create a Fetcher
 
 The `Fetcher` is required to fetch new data from the network.
-You can create a it from a `Future` or from a `Stream`.
+You can create it from a `Future` or from a `Stream`.
 
 `FutureFetcher` is usually used alongside a RestApi, whereas `StreamFetcher` is used with a `Stream` source like a Web Socket.
 
