@@ -1,15 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:stock/fetcher.dart';
-import 'package:stock/src/key_value.dart';
-import 'package:stock/src/source_of_truth_impl.dart';
-import 'package:stock/store.dart';
-import 'package:stock/store_extensions.dart';
+import 'package:stock/src/fetcher.dart';
+import 'package:stock/src/common/key_value.dart';
+import 'package:stock/src/implementations/source_of_truth_impl.dart';
+import 'package:stock/src/stock.dart';
+import 'package:stock/src/stock_extensions.dart';
 
 ///
-/// [SourceOfTruth], as its name implies, is the persistence API which [Store] uses to serve values to
-/// the collectors. If provided, [Store] will only return values received from [SourceOfTruth] back
+/// [SourceOfTruth], as its name implies, is the persistence API which [Stock] uses to serve values to
+/// the collectors. If provided, [Stock] will only return values received from [SourceOfTruth] back
 /// to the collectors.
 ///
 /// In other words, values coming from the [Fetcher] will always be sent to the [SourceOfTruth]
@@ -18,16 +18,16 @@ import 'package:stock/store_extensions.dart';
 /// This round-trip ensures the data is consistent across the application in case the [Fetcher] does
 /// not return all fields or returns a different class type than the app uses. It is particularly
 /// useful if your application has a local observable database which is directly modified by the app,
-/// as Store can observe these changes and update the collectors even before value is synced to the
+/// as [Stock] can observe these changes and update the collectors even before value is synced to the
 /// backend.
 ///
 /// [SourceOfTruth] takes care of making any source (no matter if it has flowing reads or not) into
 /// a common flowing API.
 ///
 /// A source of truth is usually backed by local storage. Its purpose is to eliminate the need
-/// for waiting on a network update before local modifications are available (via [Store.stream]).
+/// for waiting on a network update before local modifications are available (via [Stock.stream]).
 ///
-/// For maximal simplicity, [writer]'s record type ([T]] and [reader]'s record type
+/// For maximal simplicity, [write]'s record type ([T]] and [reader]'s record type
 /// ([T]) are identical. However, sometimes reading one type of objects from network and
 /// transforming them to another type when placing them in local storage is needed.
 /// For this case you can use the [mapTo] and [mapToUsingMapper] extensions.
@@ -43,15 +43,15 @@ abstract class SourceOfTruth<Key, T> {
   }) =>
       SourceOfTruthImpl(reader, writer);
 
-  /// Used by [Store] to read records from the source of truth for the given [key].
+  /// Used by [Stock] to read records from the source of truth for the given [key].
   Stream<T?> reader(Key key);
 
-  /// Used by [Store] to write records **coming in from the fetcher (network)** to the source of
+  /// Used by [Stock] to write records **coming in from the fetcher (network)** to the source of
   /// truth.
   ///
-  /// **Note:** [Store] currently does not support updating the source of truth with local user
+  /// **Note:** [Stock] currently does not support updating the source of truth with local user
   /// updates (i.e writing record of type [T]). However, any changes in the local database
-  /// will still be visible via [Store.stream] APIs as long as you are using a local storage that
+  /// will still be visible via [Stock.stream] APIs as long as you are using a local storage that
   /// supports observability (e.g. Floor, Drift, Realm).
   Future<void> write(Key key, T? value);
 }

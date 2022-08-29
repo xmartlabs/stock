@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stock/source_of_truth.dart';
-import 'package:stock/store_extensions.dart';
-import 'package:stock/type_mapper.dart';
+import 'package:stock/src/source_of_truth.dart';
+import 'package:stock/src/stock_extensions.dart';
+import 'package:stock/src/type_mapper.dart';
 
 void main() {
   group("Mapper test", () {
@@ -33,7 +33,7 @@ void main() {
   });
 }
 
-class _IntStringMapper implements StoreTypeMapper<int, String> {
+class _IntStringMapper implements StockTypeMapper<int, String> {
   @override
   String fromInput(int value) => value.toString();
 

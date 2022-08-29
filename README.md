@@ -6,7 +6,7 @@ It is inspired by the [Store] Kotlin library.
 Its main goal is to prevent excessive calls to the network and disk cache. 
 By utilizing it, you eliminate the possibility of flooding your network with the same request while, at the same time, adding layers of caching.
 
-Although you can use it without a local source, the greatest benefit comes from combining Stock with a local database such as [Floor], [Drift], [sqflite], [Realm], etc. 
+Although you can use it without a local source, the greatest benefit comes from combining Stock with a local database such as [Floor], [Drift], [Sqflite], [Realm], etc. 
 
 ## Features
 
@@ -73,7 +73,7 @@ _Note: to the proper operation, when `write` is invoked with new data, the sourc
 `Stock` lets you combine the different data sources and get the data.
 
 ```dart
- final store = Store<String, List<Tweet>>(
+ final stock = Stock<String, List<Tweet>>(
     fetcher: fetcher,
     sourceOfTruth: sourceOfTruth,
   );
@@ -85,25 +85,25 @@ You can generate a data `Stream` using `stream()`.
 
 You need to invoke it with a specific `key`, and an optional `refresh` value that tells Stock if a refresh is optional or mandatory.
 
-That returns a data stream of `StoreResponse`, which has 3 possible values:
-- `StoreResponseLoading` informs that a network request is in progress. It can be useful to display a loading indicator in your UI.
-- `StoreResponseData` holds the response data. It has a `value` field which includes an instance of the type returned by `Stock`.
-- `StoreResponseError` indicates that an error happened.
+That returns a data stream of `StockResponse`, which has 3 possible values:
+- `StockResponseLoading` informs that a network request is in progress. It can be useful to display a loading indicator in your UI.
+- `StockResponseData` holds the response data. It has a `value` field which includes an instance of the type returned by `Stock`.
+- `StockResponseError` indicates that an error happened.
 When an error happens, `Stock` does not throw an exception, instead, it wraps it in this class.
 It includes an `error` field that contains the exception thrown by the given `origin`.
 
-Each `StoreResponse` includes an `origin` field which specifies where the event is coming from. 
+Each `StockResponse` includes an `origin` field which specifies where the event is coming from. 
 
 ```dart
-  store
+  stock
       .stream('key', refresh: true)
-      .listen((StoreResponse<List<Tweet>> storeResponse) {
-    if (storeResponse is StoreResponseLoading) {
+      .listen((StockResponse<List<Tweet>> stockResponse) {
+    if (stockResponse is StockResponseLoading) {
       _displayLoadingIndicator();
-    } else if (storeResponse is StoreResponseData) {
-      _displayTweetsInUI((storeResponse is StoreResponseData).data);
+    } else if (stockResponse is StockResponseData) {
+      _displayTweetsInUI((stockResponse is StockResponseData).data);
     } else {
-      _displayErrorInUi((storeResponse as StoreResponseError).error);
+      _displayErrorInUi((stockResponse as StockResponseError).error);
     }
   });
 ```
@@ -117,21 +117,21 @@ Stock provides a couple of methods to get data without using a data stream.
 
 ```dart
   // Get fresh data
-  final List<Tweet> freshTweets = await store.fresh(key);
+  final List<Tweet> freshTweets = await stock.fresh(key);
   
   // Get the previous cached data
-  final List<Tweet> cachedTweets = await store.get(key);
+  final List<Tweet> cachedTweets = await stock.get(key);
 ```
 
 
 ### Use different types for `Fetcher` and `SourceOfTruth`
 
-Sometimes you need to use different entities for Network and DB. For that case `Stock` provides the `StoreTypeMapper`, a class that transforms one entity into the other.
+Sometimes you need to use different entities for Network and DB. For that case `Stock` provides the `StockTypeMapper`, a class that transforms one entity into the other.
 
-`StoreTypeMapper` is used in the `SourceOfTruth` via the method `mapToUsingMapper`
+`StockTypeMapper` is used in the `SourceOfTruth` via the method `mapToUsingMapper`
 
 ```dart
-class TweetMapper implements StoreTypeMapper<DbTweet, NetworkTweet> {
+class TweetMapper implements StockTypeMapper<DbTweet, NetworkTweet> {
   @override
   NetworkTweet fromInput(DbTweet value) => NetworkTweet(value);
 
@@ -197,7 +197,7 @@ final SharedPreferencesSourceOfTruth<String, User> = SharedPreferencesSourceOfTr
 
 For bugs please use [GitHub Issues](https://github.com/xmartlabs/stock/issues). For questions, ideas, and discussions use [GitHub Discussions](https://github.com/xmartlabs/stock/discussions).
 
-Made with ❤️ by [Xmartlabs](http://xmartlabs.com).
+Made with ❤️ by [Xmartlabs](https://xmartlabs.com).
 
 ## License
 
@@ -215,13 +215,13 @@ Made with ❤️ by [Xmartlabs](http://xmartlabs.com).
     See the License for the specific language governing permissions and
     limitations under the License.
 
-[Store]: https://github.com/MobileNativeFoundation/Store
-[Floor]: https://pub.dev/packages/floor
 [Drift]: https://pub.dev/packages/drift
-[sqflite]: https://pub.dev/packages/sqflite
+[Floor]: https://pub.dev/packages/floor
 [Realm]: https://pub.dev/packages/realm
-[`Stock`]: lib/store.dart
-[`Fetcher`]: lib/fetcher.dart
-[`SourceOfTruth`]: lib/source_of_truth.dart
-[`CachedSourceOfTruth`]: lib/source_of_truth.dart
+[Store]: https://github.com/MobileNativeFoundation/Store
+[`CachedSourceOfTruth`]: lib/src/source_of_truth.dart
+[`Fetcher`]: lib/src/fetcher.dart
+[`SourceOfTruth`]: lib/src/source_of_truth.dart
+[`Stock`]: lib/src/stock.dart
 [shared_preferences]: https://pub.dev/packages/shared_preferences
+[Sqflite]: https://pub.dev/packages/sqflite
