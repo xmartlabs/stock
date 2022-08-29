@@ -6,8 +6,8 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:stock/source_of_truth.dart' as _i4;
-import 'package:stock/src/factory_fetcher.dart' as _i2;
+import 'package:stock/src/source_of_truth.dart' as _i4;
+import 'package:stock/src/implementations/factory_fetcher.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

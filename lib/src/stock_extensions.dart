@@ -1,11 +1,11 @@
-import 'package:stock/type_mapper.dart';
+import 'package:stock/src/type_mapper.dart';
 
 import 'source_of_truth.dart';
 
 extension SourceOfTruthExtensions<Key, Input> on SourceOfTruth<Key, Input> {
   /// Transforms a [SourceOfTruth] of [Key], [Input] into a [SourceOfTruth] of [Key], [Output].
   SourceOfTruth<Key, Output> mapToUsingMapper<Output>(
-    StoreTypeMapper<Input, Output> mapper,
+    StockTypeMapper<Input, Output> mapper,
   ) =>
       mapTo(mapper.fromInput, mapper.fromOutput);
 

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:stock/store.dart';
+import 'package:stock/src/stock.dart';
 
 import 'common/source_of_truth/cached_and_mocked_source_of_truth.dart';
 import 'common_mocks.mocks.dart';
@@ -13,12 +13,12 @@ void main() {
       final sourceOfTruth = createMockedSourceOfTruthFromMethods<int, int>(
           (key) => Stream.value(-1), (key, output) => Future.value());
 
-      final store = Store<int, int>(
+      final stock = Stock<int, int>(
         fetcher: fetcher,
         sourceOfTruth: sourceOfTruth,
       );
 
-      final result = await store.fresh(1);
+      final result = await stock.fresh(1);
       expect(result, equals(1));
       verifyNever(sourceOfTruth.reader(any));
       verify(sourceOfTruth.write(any, any)).called(1);
@@ -31,12 +31,12 @@ void main() {
       when(fetcher.factory).thenReturn((key) => Stream.value(1));
       final sourceOfTruth = createMockedSourceOfTruthFromMethods<int, int>(
           (key) => Stream.value(-1), (key, output) => Future.value());
-      final store = Store<int, int>(
+      final stock = Stock<int, int>(
         fetcher: fetcher,
         sourceOfTruth: sourceOfTruth,
       );
 
-      final result = await store.get(1);
+      final result = await stock.get(1);
       expect(result, equals(-1));
       verifyNever(fetcher.factory);
       verify(sourceOfTruth.reader(any)).called(1);
@@ -48,12 +48,12 @@ void main() {
       var fetcher = MockFutureFetcher<int, int>();
       when(fetcher.factory).thenReturn((key) => Stream.value(1));
       final sourceOfTruth = createMockedSourceOfTruth<int, int>();
-      final store = Store<int, int>(
+      final stock = Stock<int, int>(
         fetcher: fetcher,
         sourceOfTruth: sourceOfTruth,
       );
 
-      final result = await store.get(1);
+      final result = await stock.get(1);
       expect(result, equals(1));
       verify(fetcher.factory).called(1);
       verify(sourceOfTruth.reader(any)).called(1);

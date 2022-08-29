@@ -1,4 +1,4 @@
-import 'package:stock/fetcher.dart';
+import 'package:stock/src/fetcher.dart';
 
 class FactoryFetcher<Key, Output> implements Fetcher<Key, Output> {
   Stream<Output> Function(Key key) factory;
