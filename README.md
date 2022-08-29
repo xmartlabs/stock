@@ -1,4 +1,7 @@
 # Stock
+[![Pub](https://img.shields.io/pub/v/stock.svg?style=flat-square)](https://pub.dartlang.org/packages/stock)
+[![Codecov](https://codecov.io/gh/xmartlabs/stock/branch/main/graph/badge.svg)](https://codecov.io/gh/xmartlabs/stock)
+[![Dart CI](https://github.com/xmartlabs/stock/actions/workflows/dart-ci.yml/badge.svg?branch=main)](https://github.com/xmartlabs/stock/actions/workflows/dart-ci.yml)
 
 Stock is a dart package for loading data from both remote and local sources.
 It is inspired by the [Store] Kotlin library.
