@@ -1,4 +1,5 @@
 import 'package:stock/src/errors.dart';
+import 'package:stock/src/extensions/stock_response_internal_extensions.dart';
 import 'package:stock/src/stock_response.dart';
 import 'package:stock/src/stock_response_extensions.dart';
 import 'package:test/test.dart';
@@ -27,6 +28,21 @@ void main() {
         const StockResponse.data(ResponseOrigin.fetcher, 1).requireData(),
         equals(1),
       );
+    });
+  });
+  group('throwIfError extension', () {
+    test('throwIfError of an error throws the exception', () async {
+      final customEx = Exception("Custom ex");
+      expect(
+        StockResponse.error(ResponseOrigin.fetcher, customEx).throwIfError,
+        throwsA((e) => e == customEx),
+      );
+    });
+    test('throwIfError of a loading response does not do anything', () async {
+      const StockResponse.loading(ResponseOrigin.fetcher).throwIfError();
+    });
+    test('throwIfError of a data returns the data', () async {
+      const StockResponse.data(ResponseOrigin.fetcher, 1).throwIfError();
     });
   });
   group('Get data extensions', () {
@@ -65,6 +81,20 @@ void main() {
         equals(true),
       );
     });
+    test('Data returns true if it is a data event', () async {
+      expect(
+        StockResponse.error(ResponseOrigin.fetcher, Error()).isData,
+        equals(false),
+      );
+      expect(
+        const StockResponse.data(ResponseOrigin.fetcher, 1).isData,
+        equals(true),
+      );
+      expect(
+        const StockResponse.loading(ResponseOrigin.fetcher).isData,
+        equals(false),
+      );
+    });
     test('Error returns true if the response is an error', () async {
       expect(
         StockResponse.error(ResponseOrigin.fetcher, Error()).isError,
@@ -80,4 +110,35 @@ void main() {
       );
     });
   });
+
+  group('Unknown type', () {
+    test("Require data throws error if the type is not recognized", () async {
+      expect(
+        _FakeType().requireData,
+        throwsA(
+          (e) =>
+              e is StockError &&
+              e.toString() ==
+                  'StockError: Type error requireData expect either Success, Error but was given _FakeType',
+        ),
+      );
+    });
+
+    test("Swap type throws error if the type is not recognized", () async {
+      expect(
+        _FakeType().swapType,
+        throwsA(
+          (e) =>
+              e is StockError &&
+              e.toString() ==
+                  'StockError: Type error swapType expect either Success, Error or Loading but was given _FakeType',
+        ),
+      );
+    });
+  });
+}
+
+class _FakeType implements StockResponse<int> {
+  @override
+  ResponseOrigin get origin => ResponseOrigin.fetcher;
 }
