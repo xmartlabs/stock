@@ -1,4 +1,3 @@
-
 name: Dart CI
 on:
   pull_request:
@@ -35,4 +34,11 @@ jobs:
         run: dart run dart_code_metrics:metrics check-unused-files lib --fatal-unused
 
       - name: Run tests
-        run: dart test
+        run: |
+          dart pub global activate coverage 1.2.0
+          dart test --coverage=coverage && dart pub global run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
+
+      - uses: codecov/codecov-action@v3
+        with:
+          verbose: true
+          files: ./coverage/lcov.info
