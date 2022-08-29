@@ -15,7 +15,9 @@ extension StoreResponseExtensions<T> on StoreResponse<T> {
     } else if (isLoading) {
       return StoreResponse.loading(origin);
     } else {
-      throw StockError('Unknown type');
+      throw StockError(
+        'Type error swapType expect either Success, Error or Loading but was given $runtimeType',
+      );
     }
   }
 
@@ -27,7 +29,9 @@ extension StoreResponseExtensions<T> on StoreResponse<T> {
     } else if (isLoading) {
       throw StockError('There is no data in loading');
     } else {
-      throw StockError('Unknown type');
+      throw StockError(
+        'Type error requireData expect either Success, Error but was given $runtimeType',
+      );
     }
   }
 
