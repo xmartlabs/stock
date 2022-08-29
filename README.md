@@ -89,7 +89,7 @@ That returns a data stream of `StoreResponse`, which has 3 possible values:
 - `StoreResponseLoading` informs that a network request is in progress. It can be useful to display a loading indicator in your UI.
 - `StoreResponseData` holds the response data. It has a `value` field which includes an instance of the type returned by `Stock`.
 - `StoreResponseError` indicates that an error happened.
-When an error happens, `Stock` does not throw an error, instead, it wraps it in this class.
+When an error happens, `Stock` does not throw an exception, instead, it wraps it in this class.
 It includes an `error` field that contains the exception thrown by the given `origin`.
 
 Each `StoreResponse` includes an `origin` field which specifies where the event is coming from. 
