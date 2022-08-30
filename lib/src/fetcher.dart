@@ -11,7 +11,7 @@ import 'package:stock/src/stock_response.dart';
 ///
 /// See [ofFuture] for easily translating from a regular `Future` function.
 /// See [ofStream], for easily translating to [StockResponse] (and
-/// automatically transforming exceptions into [StockResponseError].
+/// automatically transforming exceptions into [StockResponseError]).
 abstract class Fetcher<Key, T> {
   Fetcher._();
 
