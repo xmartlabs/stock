@@ -1,5 +1,5 @@
 name: stock
-description: Dart Library for Async Data Loading and Caching.
+description: Dart package for Async Data Loading and Caching.
   Combine local (DB, cache) and network data simply and safely.
 version: 0.0.1
 homepage: https://github.com/xmartlabs/stock
