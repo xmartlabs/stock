@@ -19,21 +19,23 @@ void main() {
 
       var resultList = await stock.getFreshResultRemovingErrorStackTraces(1);
       expect(
-          resultList,
-          equals([
-            const StockResponseLoading<int>(ResponseOrigin.fetcher),
-            const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            const StockResponse.data(ResponseOrigin.fetcher, 1),
-          ]));
+        resultList,
+        equals([
+          const StockResponseLoading<int>(ResponseOrigin.fetcher),
+          const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
+          const StockResponse.data(ResponseOrigin.fetcher, 1),
+        ]),
+      );
 
       resultList = await stock.getFreshResultRemovingErrorStackTraces(2);
       expect(
-          resultList,
-          equals([
-            const StockResponseLoading<int>(ResponseOrigin.fetcher),
-            const StockResponse.data(ResponseOrigin.sourceOfTruth, -2),
-            const StockResponse.data(ResponseOrigin.fetcher, 2),
-          ]));
+        resultList,
+        equals([
+          const StockResponseLoading<int>(ResponseOrigin.fetcher),
+          const StockResponse.data(ResponseOrigin.sourceOfTruth, -2),
+          const StockResponse.data(ResponseOrigin.fetcher, 2),
+        ]),
+      );
     });
   });
 }

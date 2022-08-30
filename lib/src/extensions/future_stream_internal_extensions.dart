@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:rxdart/rxdart.dart';
 import 'package:stock/src/stock_response.dart';
 

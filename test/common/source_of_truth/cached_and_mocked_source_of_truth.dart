@@ -10,19 +10,27 @@ MockSourceOfTruth<Key, Value> createMockedSourceOfTruthFromMethods<Key, Value>(
   Future<void> Function(Key key, Value? output) writer,
 ) {
   final sourceOfTruth = MockSourceOfTruth<Key, Value>();
-  when(sourceOfTruth.reader(any))
-      .thenAnswer((invocation) => reader(invocation.positionalArguments[0]));
-  when(sourceOfTruth.write(any, any)).thenAnswer((invocation) => writer(
-      invocation.positionalArguments[0], invocation.positionalArguments[1]));
+  when(sourceOfTruth.reader(any)).thenAnswer(
+    (invocation) => reader(invocation.positionalArguments[0] as Key),
+  );
+  when(sourceOfTruth.write(any, any)).thenAnswer(
+    (invocation) => writer(
+      invocation.positionalArguments[0] as Key,
+      invocation.positionalArguments[1] as Value?,
+    ),
+  );
   return sourceOfTruth;
 }
 
-MockSourceOfTruth<Key, Value> createMockedSourceOfTruth<Key, Value>(
-    [Value? defaultValue]) {
+MockSourceOfTruth<Key, Value> createMockedSourceOfTruth<Key, Value>([
+  Value? defaultValue,
+]) {
   final cachedSot =
       CachedSourceOfTruthWithDefaultValue<Key, Value>(defaultValue);
   return createMockedSourceOfTruthFromMethods(
-      cachedSot.reader, cachedSot.write);
+    cachedSot.reader,
+    cachedSot.write,
+  );
 }
 
 MockSourceOfTruth<int, int>

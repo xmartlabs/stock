@@ -7,15 +7,21 @@ import 'package:stock/src/stock.dart';
 /// The [key] is a unique identifier for your data
 ///
 /// If [refresh] is `true`, [Stock] will always get fresh value from fetcher.
-/// If it's `false`, [Stock] will try to return the [SourceOfTruth] data,
-/// and if it doesn't exist, [Stock] will request fresh data using the [Fetcher].
+/// If it's `false`, [Stock] will try to return the [SourceOfTruth] data, and
+/// if it doesn't exist, [Stock] will request fresh data using the [Fetcher].
 ///
 class StockRequest<Key> {
-  Key key;
-  bool refresh;
-
+  /// [StockRequest] constructor
   StockRequest({
     required this.key,
     required this.refresh,
   });
+
+  /// The request key
+  Key key;
+
+  /// If it is `true`, [Stock] will always get fresh value from fetcher.
+  /// If it's `false`, [Stock] will try to return the [SourceOfTruth] data, and
+  /// if it doesn't exist, [Stock] will request fresh data using the [Fetcher].
+  bool refresh;
 }

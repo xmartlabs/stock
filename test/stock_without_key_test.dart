@@ -10,7 +10,7 @@ import 'common_mocks.mocks.dart';
 void main() {
   group('Stock without specific key', () {
     test('Simple request using dynamic', () async {
-      var fetcher = MockFutureFetcher<dynamic, int>();
+      final fetcher = MockFutureFetcher<dynamic, int>();
       when(fetcher.factory).thenReturn((_) => Stream.value(1));
       final sourceOfTruth = CachedSourceOfTruthWithDefaultValue<void, int>(-1);
       final stock = Stock<dynamic, int>(
@@ -20,12 +20,13 @@ void main() {
 
       final resultList = await stock.getFreshResult(null);
       expect(
-          resultList,
-          equals([
-            const StockResponseLoading<int>(ResponseOrigin.fetcher),
-            const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            const StockResponse.data(ResponseOrigin.fetcher, 1),
-          ]));
+        resultList,
+        equals([
+          const StockResponseLoading<int>(ResponseOrigin.fetcher),
+          const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
+          const StockResponse.data(ResponseOrigin.fetcher, 1),
+        ]),
+      );
     });
   });
 }
