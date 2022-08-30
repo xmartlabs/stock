@@ -3,9 +3,9 @@ import 'package:stock/src/source_of_truth.dart';
 
 class CachedSourceOfTruthWithDefaultValue<Key, T>
     extends CachedSourceOfTruth<Key, T> {
-  final T? _defaultValue;
-
   CachedSourceOfTruthWithDefaultValue([this._defaultValue]);
+
+  final T? _defaultValue;
 
   @override
   Stream<T?> reader(Key key) => super.reader(key).flatMap((response) async* {

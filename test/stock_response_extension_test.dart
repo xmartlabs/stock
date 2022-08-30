@@ -7,17 +7,18 @@ import 'package:test/test.dart';
 void main() {
   group('Require data extensions', () {
     test('requireData of an error throws the exception', () async {
-      final customEx = Exception("Custom ex");
+      final customEx = Exception('Custom ex');
       expect(
-        StockResponse.error(ResponseOrigin.fetcher, customEx).requireData,
-        throwsA((e) => e == customEx),
+        StockResponseError<dynamic>(ResponseOrigin.fetcher, customEx)
+            .requireData,
+        throwsA((dynamic e) => e == customEx),
       );
     });
     test('requireData of a loading response throws a exception', () async {
       expect(
-        const StockResponse.loading(ResponseOrigin.fetcher).requireData,
+        const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).requireData,
         throwsA(
-          (e) =>
+          (dynamic e) =>
               e is StockError &&
               e.toString() == 'StockError: There is no data in loading',
         ),
@@ -32,14 +33,16 @@ void main() {
   });
   group('throwIfError extension', () {
     test('throwIfError of an error throws the exception', () async {
-      final customEx = Exception("Custom ex");
+      final customEx = Exception('Custom ex');
       expect(
-        StockResponse.error(ResponseOrigin.fetcher, customEx).throwIfError,
-        throwsA((e) => e == customEx),
+        StockResponseError<dynamic>(ResponseOrigin.fetcher, customEx)
+            .throwIfError,
+        throwsA((dynamic e) => e == customEx),
       );
     });
     test('throwIfError of a loading response does not do anything', () async {
-      const StockResponse.loading(ResponseOrigin.fetcher).throwIfError();
+      const StockResponseLoading<dynamic>(ResponseOrigin.fetcher)
+          .throwIfError();
     });
     test('throwIfError of a data returns the data', () async {
       const StockResponse.data(ResponseOrigin.fetcher, 1).throwIfError();
@@ -47,15 +50,17 @@ void main() {
   });
   group('Get data extensions', () {
     test('getData of an error returns null', () async {
-      final customEx = Exception("Custom ex");
+      final customEx = Exception('Custom ex');
       expect(
-        StockResponse.error(ResponseOrigin.fetcher, customEx).getDataOrNull(),
+        StockResponseError<dynamic>(ResponseOrigin.fetcher, customEx)
+            .getDataOrNull(),
         equals(null),
       );
     });
     test('getData of a loading response returns null', () async {
       expect(
-        const StockResponse.loading(ResponseOrigin.fetcher).getDataOrNull(),
+        const StockResponseLoading<dynamic>(ResponseOrigin.fetcher)
+            .getDataOrNull(),
         equals(null),
       );
     });
@@ -69,7 +74,7 @@ void main() {
   group('Property extensions', () {
     test('Loading returns true if loading', () async {
       expect(
-        StockResponse.error(ResponseOrigin.fetcher, Error()).isLoading,
+        StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).isLoading,
         equals(false),
       );
       expect(
@@ -77,13 +82,13 @@ void main() {
         equals(false),
       );
       expect(
-        const StockResponse.loading(ResponseOrigin.fetcher).isLoading,
+        const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).isLoading,
         equals(true),
       );
     });
     test('Data returns true if it is a data event', () async {
       expect(
-        StockResponse.error(ResponseOrigin.fetcher, Error()).isData,
+        StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).isData,
         equals(false),
       );
       expect(
@@ -91,13 +96,13 @@ void main() {
         equals(true),
       );
       expect(
-        const StockResponse.loading(ResponseOrigin.fetcher).isData,
+        const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).isData,
         equals(false),
       );
     });
     test('Error returns true if the response is an error', () async {
       expect(
-        StockResponse.error(ResponseOrigin.fetcher, Error()).isError,
+        StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).isError,
         equals(true),
       );
       expect(
@@ -105,33 +110,35 @@ void main() {
         equals(false),
       );
       expect(
-        const StockResponse.loading(ResponseOrigin.fetcher).isError,
+        const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).isError,
         equals(false),
       );
     });
   });
 
   group('Unknown type', () {
-    test("Require data throws error if the type is not recognized", () async {
+    test('Require data throws error if the type is not recognized', () async {
       expect(
         _FakeType().requireData,
         throwsA(
-          (e) =>
+          (dynamic e) =>
               e is StockError &&
               e.toString() ==
-                  'StockError: Type error requireData expect either Success, Error but was given _FakeType',
+                  'StockError: Type error requireData expect either Success, '
+                      'Error but was given _FakeType',
         ),
       );
     });
 
-    test("Swap type throws error if the type is not recognized", () async {
+    test('Swap type throws error if the type is not recognized', () async {
       expect(
         _FakeType().swapType,
         throwsA(
-          (e) =>
+          (dynamic e) =>
               e is StockError &&
               e.toString() ==
-                  'StockError: Type error swapType expect either Success, Error or Loading but was given _FakeType',
+                  'StockError: Type error swapType expect either Success, '
+                      'Error or Loading but was given _FakeType',
         ),
       );
     });

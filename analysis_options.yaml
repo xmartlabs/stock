@@ -1,4 +1,4 @@
-include: package:lints/recommended.yaml
+include: package:very_good_analysis/analysis_options.yaml
 
 dart_code_metrics:
   anti-patterns:

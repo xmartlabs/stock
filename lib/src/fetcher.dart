@@ -11,29 +11,31 @@ import 'package:stock/src/stock_response.dart';
 ///
 /// See [ofFuture] for easily translating from a regular `Future` function.
 /// See [ofStream], for easily translating to [StockResponse] (and
-/// automatically transforming exceptions into [StockResponseError].
+/// automatically transforming exceptions into [StockResponseError]).
 abstract class Fetcher<Key, T> {
   Fetcher._();
 
-  /// "Creates" a [Fetcher] from a [futureFactory] and translates the results into a [StockResponse].
+  /// "Creates" a [Fetcher] from a [futureFactory] and translates the results
+  /// into a [StockResponse].
   ///
-  /// Emitted values will be wrapped in [StockResponseData]. If an exception disrupts the stream then
-  /// it will be wrapped in [StockResponseError]
+  /// Emitted values will be wrapped in [StockResponseData]. If an exception
+  /// disrupts the stream then it will be wrapped in [StockResponseError]
   ///
-  /// Use when creating a [Stock] that fetches objects in a single response per request
-  /// network protocol (e.g Http).
+  /// Use when creating a [Stock] that fetches objects in a single response per
+  /// request network protocol (e.g Http).
   static Fetcher<Key, Output> ofFuture<Key, Output>(
     Future<Output> Function(Key key) futureFactory,
   ) =>
       FutureFetcher(futureFactory);
 
-  /// "Creates" a [Fetcher] from a [streamFactory] and translates the results into a [StockResponse].
+  /// "Creates" a [Fetcher] from a [streamFactory] and translates the results
+  /// into a [StockResponse].
   ///
-  /// Emitted values will be wrapped in [StockResponseData]. If an exception disrupts the flow then
-  /// it will be wrapped in [StockResponseError].
+  /// Emitted values will be wrapped in [StockResponseData]. If an exception
+  /// disrupts the flow then it will be wrapped in [StockResponseError].
   ///
-  /// Use when creating a [Stock] that fetches objects in a multiple responses per request
-  /// network protocol (e.g Web Sockets).
+  /// Use when creating a [Stock] that fetches objects in a multiple responses
+  /// per request network protocol (e.g Web Sockets).
   static Fetcher<Key, Output> ofStream<Key, Output>(
     Stream<Output> Function(Key key) streamFactory,
   ) =>

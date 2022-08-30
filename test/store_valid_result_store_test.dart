@@ -8,7 +8,7 @@ import 'common/source_of_truth/source_of_truth_with_delay.dart';
 import 'common/stock_test_extensions.dart';
 
 void main() {
-  group("Valid results", () {
+  group('Valid results', () {
     test('Source of truth and fetcher are called', () async {
       final sourceOfTruth = CachedSourceOfTruthWithDefaultValue<int, int>(-1);
       final fetcher = Fetcher.ofFuture((int key) async => 1);
@@ -19,12 +19,13 @@ void main() {
 
       final resultList = await stock.getFreshResult(1);
       expect(
-          resultList,
-          equals([
-            const StockResponseLoading<int>(ResponseOrigin.fetcher),
-            const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            const StockResponse.data(ResponseOrigin.fetcher, 1),
-          ]));
+        resultList,
+        equals([
+          const StockResponseLoading<int>(ResponseOrigin.fetcher),
+          const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
+          const StockResponse.data(ResponseOrigin.fetcher, 1),
+        ]),
+      );
     });
 
     test('Source of truth data is returned before fetcher data', () async {
@@ -40,12 +41,13 @@ void main() {
         delay: const Duration(milliseconds: 500),
       );
       expect(
-          resultList,
-          equals([
-            const StockResponseLoading<int>(ResponseOrigin.fetcher),
-            const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            const StockResponse.data(ResponseOrigin.fetcher, 1),
-          ]));
+        resultList,
+        equals([
+          const StockResponseLoading<int>(ResponseOrigin.fetcher),
+          const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
+          const StockResponse.data(ResponseOrigin.fetcher, 1),
+        ]),
+      );
     });
 
     test('Source of truth and stream fetcher are called', () async {
@@ -59,14 +61,15 @@ void main() {
 
       final resultList = await stock.getFreshResult(1);
       expect(
-          resultList,
-          equals([
-            const StockResponseLoading<int>(ResponseOrigin.fetcher),
-            const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            const StockResponse.data(ResponseOrigin.fetcher, 1),
-            const StockResponse.data(ResponseOrigin.fetcher, 2),
-            const StockResponse.data(ResponseOrigin.fetcher, 3),
-          ]));
+        resultList,
+        equals([
+          const StockResponseLoading<int>(ResponseOrigin.fetcher),
+          const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
+          const StockResponse.data(ResponseOrigin.fetcher, 1),
+          const StockResponse.data(ResponseOrigin.fetcher, 2),
+          const StockResponse.data(ResponseOrigin.fetcher, 3),
+        ]),
+      );
     });
 
     test('Test a stock with only a stream fetcher', () async {
@@ -79,13 +82,14 @@ void main() {
 
       final resultList = await stock.getFreshResult(1);
       expect(
-          resultList,
-          equals([
-            const StockResponseLoading<int>(ResponseOrigin.fetcher),
-            const StockResponse.data(ResponseOrigin.fetcher, 1),
-            const StockResponse.data(ResponseOrigin.fetcher, 2),
-            const StockResponse.data(ResponseOrigin.fetcher, 3),
-          ]));
+        resultList,
+        equals([
+          const StockResponseLoading<int>(ResponseOrigin.fetcher),
+          const StockResponse.data(ResponseOrigin.fetcher, 1),
+          const StockResponse.data(ResponseOrigin.fetcher, 2),
+          const StockResponse.data(ResponseOrigin.fetcher, 3),
+        ]),
+      );
     });
   });
 }

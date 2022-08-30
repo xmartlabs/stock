@@ -7,7 +7,7 @@ import 'common/source_of_truth/source_of_truth_with_error.dart';
 import 'common/stock_test_extensions.dart';
 
 void main() {
-  group("Stock requests with errors", () {
+  group('Stock requests with errors', () {
     test('Source of truth with read error and fetcher ok', () async {
       final sourceOfTruth =
           SourceOfTruthWithError<int, int>(-1, throwReadErrorCount: 1);
@@ -19,13 +19,16 @@ void main() {
 
       final resultList = await stock.getFreshResultRemovingErrorStackTraces(1);
       expect(
-          resultList,
-          equals([
-            const StockResponseLoading<int>(ResponseOrigin.fetcher),
-            StockResponseError<int>(ResponseOrigin.sourceOfTruth,
-                SourceOfTruthWithError.readException),
-            const StockResponse.data(ResponseOrigin.fetcher, 1),
-          ]));
+        resultList,
+        equals([
+          const StockResponseLoading<int>(ResponseOrigin.fetcher),
+          StockResponseError<int>(
+            ResponseOrigin.sourceOfTruth,
+            SourceOfTruthWithError.readException,
+          ),
+          const StockResponse.data(ResponseOrigin.fetcher, 1),
+        ]),
+      );
     });
 
     test('Source of truth with write error and fetcher ok', () async {
@@ -39,13 +42,16 @@ void main() {
 
       final resultList = await stock.getFreshResultRemovingErrorStackTraces(1);
       expect(
-          resultList,
-          equals([
-            const StockResponseLoading<int>(ResponseOrigin.fetcher),
-            const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            StockResponseError<int>(
-                ResponseOrigin.fetcher, SourceOfTruthWithError.writeException),
-          ]));
+        resultList,
+        equals([
+          const StockResponseLoading<int>(ResponseOrigin.fetcher),
+          const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
+          StockResponseError<int>(
+            ResponseOrigin.fetcher,
+            SourceOfTruthWithError.writeException,
+          ),
+        ]),
+      );
     });
 
     test('Source of truth ok and fetcher with error', () async {
@@ -59,12 +65,13 @@ void main() {
 
       final resultList = await stock.getFreshResultRemovingErrorStackTraces(1);
       expect(
-          resultList,
-          equals([
-            const StockResponseLoading<int>(ResponseOrigin.fetcher),
-            const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
-            StockResponseError<int>(ResponseOrigin.fetcher, fetcherError),
-          ]));
+        resultList,
+        equals([
+          const StockResponseLoading<int>(ResponseOrigin.fetcher),
+          const StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
+          StockResponseError<int>(ResponseOrigin.fetcher, fetcherError),
+        ]),
+      );
     });
   });
 }

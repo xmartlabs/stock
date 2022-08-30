@@ -4,16 +4,16 @@ import 'package:stock/src/type_mapper.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group("Mapper test", () {
+  group('Mapper test', () {
     test('SOT of type is converted to the new type using mapper', () async {
       final sot = CachedSourceOfTruth<int, int>();
       final newSot = sot.mapToUsingMapper(_IntStringMapper());
 
-      newSot.write(1, '2');
+      await newSot.write(1, '2');
       expect(await sot.reader(1).first, 2);
       expect(await newSot.reader(1).first, '2');
 
-      sot.write(1, 3);
+      await sot.write(1, 3);
       expect(await sot.reader(1).first, 3);
       expect(await newSot.reader(1).first, '3');
     });
@@ -22,11 +22,11 @@ void main() {
       final sot = CachedSourceOfTruth<int, int>();
       final newSot = sot.mapTo((value) => value.toString(), int.parse);
 
-      newSot.write(1, '2');
+      await newSot.write(1, '2');
       expect(await sot.reader(1).first, 2);
       expect(await newSot.reader(1).first, '2');
 
-      sot.write(1, 3);
+      await sot.write(1, 3);
       expect(await sot.reader(1).first, 3);
       expect(await newSot.reader(1).first, '3');
     });

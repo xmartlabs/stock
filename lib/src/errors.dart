@@ -1,9 +1,11 @@
 /// Used to notify unexpected errors
 class StockError extends Error {
-  final String message;
-
+  /// Constructor
   StockError(this.message);
 
+  /// The error message
+  final String message;
+
   @override
-  String toString() => "StockError: $message";
+  String toString() => 'StockError: $message';
 }

@@ -1,18 +1,19 @@
+import 'package:meta/meta.dart';
 import 'package:stock/src/fetcher.dart';
 import 'package:stock/src/source_of_truth.dart';
 import 'package:stock/src/stock.dart';
 
 /// Holder for responses from Stock.
 ///
-/// Instead of using regular error channels (a.k.a. throwing exceptions), Stock uses this holder
-/// class to represent each response. This allows the [Stream] to keep flowing even if an error happens
-/// so that if there is an observable single source of truth, the application can keep observing it.
+/// Instead of using regular error channels (a.k.a. throwing exceptions), Stock
+/// uses this holder class to represent each response. This allows the [Stream]
+/// to keep flowing even if an error happens so that if there is an observable
+/// single source of truth, the application can keep observing it.
 class StockResponse<Output> {
-  final ResponseOrigin origin;
-
   const StockResponse._(this.origin);
 
-  /// Loading event dispatched by [Stock] to signal the [Fetcher] is currently running.
+  /// Loading event dispatched by [Stock] to signal the [Fetcher] is currently
+  /// running.
   const factory StockResponse.loading(ResponseOrigin origin) =
       StockResponseLoading<Output>;
 
@@ -26,11 +27,17 @@ class StockResponse<Output> {
     Object error, [
     StackTrace? stackTrace,
   ]) = StockResponseError<Output>;
+
+  /// The origin of the response
+  final ResponseOrigin origin;
 }
 
-/// Loading event dispatched by [Stock] to signal the [Fetcher] is currently running.
+/// Loading event dispatched by [Stock] to signal the [Fetcher] is currently
+/// running.
+@immutable
 class StockResponseLoading<T> extends StockResponse<T> {
-  const StockResponseLoading(origin) : super._(origin);
+  /// StockResponseLoading constructor
+  const StockResponseLoading(ResponseOrigin origin) : super._(origin);
 
   @override
   String toString() => 'StockResponse<$T>.loading(origin: $origin)';
@@ -48,10 +55,13 @@ class StockResponseLoading<T> extends StockResponse<T> {
 }
 
 /// Data dispatched by [Stock]
+@immutable
 class StockResponseData<T> extends StockResponse<T> {
-  final T value;
-
+  /// StockResponseData constructor
   const StockResponseData(ResponseOrigin origin, this.value) : super._(origin);
+
+  /// The data value
+  final T value;
 
   @override
   String toString() => 'StockResponse<$T>.data(origin: $origin, value: $value)';
@@ -69,16 +79,22 @@ class StockResponseData<T> extends StockResponse<T> {
 }
 
 /// Error dispatched by a pipeline
+@immutable
 class StockResponseError<T> extends StockResponse<T> {
-  final Object error;
-  final StackTrace? stackTrace;
-
+  /// StockResponseError constructor
   const StockResponseError(ResponseOrigin origin, this.error, [this.stackTrace])
       : super._(origin);
 
+  /// The error
+  final Object error;
+
+  /// The error stacktrace
+  final StackTrace? stackTrace;
+
   @override
   String toString() =>
-      'StockResponse<$T>.error(origin: $origin, error: $error, stackTrace: $stackTrace)';
+      'StockResponse<$T>.error(origin: $origin, error: $error, '
+      'stackTrace: $stackTrace)';
 
   @override
   bool operator ==(dynamic other) =>

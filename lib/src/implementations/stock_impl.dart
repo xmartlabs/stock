@@ -1,30 +1,32 @@
+// ignore_for_file: public_member_api_docs
+
 import 'dart:async';
 
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:stock/src/fetcher.dart';
-import 'package:stock/src/source_of_truth.dart';
 import 'package:stock/src/extensions/future_stream_internal_extensions.dart';
 import 'package:stock/src/extensions/stock_response_internal_extensions.dart';
+import 'package:stock/src/fetcher.dart';
 import 'package:stock/src/implementations/factory_fetcher.dart';
 import 'package:stock/src/implementations/source_of_truth_impl.dart';
+import 'package:stock/src/source_of_truth.dart';
 import 'package:stock/src/stock.dart';
 import 'package:stock/src/stock_request.dart';
 import 'package:stock/src/stock_response.dart';
 import 'package:stock/src/stock_response_extensions.dart';
 
 class StockImpl<Key, Output> implements Stock<Key, Output> {
-  final FactoryFetcher<Key, Output> _fetcher;
-  final SourceOfTruth<Key, Output>? _sourceOfTruth;
-
-  final Map<Key, int> _writingMap = {};
-  final _writingLock = Mutex();
-
   StockImpl({
     required Fetcher<Key, Output> fetcher,
     required SourceOfTruth<Key, Output>? sourceOfTruth,
   })  : _fetcher = fetcher as FactoryFetcher<Key, Output>,
         _sourceOfTruth = sourceOfTruth;
+
+  final FactoryFetcher<Key, Output> _fetcher;
+  final SourceOfTruth<Key, Output>? _sourceOfTruth;
+
+  final Map<Key, int> _writingMap = {};
+  final _writingLock = Mutex();
 
   @override
   Future<Output> fresh(Key key) =>
@@ -44,11 +46,13 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
       .then((value) => value.requireData());
 
   @override
-  Stream<StockResponse<Output>> stream(Key key, {refresh = true}) =>
-      streamFromRequest(StockRequest(
-        key: key,
-        refresh: refresh,
-      ));
+  Stream<StockResponse<Output>> stream(Key key, {bool refresh = true}) =>
+      streamFromRequest(
+        StockRequest(
+          key: key,
+          refresh: refresh,
+        ),
+      );
 
   Stream<StockResponse<Output>> streamFromRequest(StockRequest<Key> request) =>
       _generateCombinedNetworkAndSourceOfTruthStream(
@@ -60,8 +64,7 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
     StockRequest<Key> request,
     SourceOfTruth<Key, Output> sourceOfTruth,
   ) async* {
-    final StreamController<StockResponse<Output?>> controller =
-        StreamController.broadcast();
+    final controller = StreamController<StockResponse<Output?>>.broadcast();
     final syncLock = Mutex();
     await syncLock.acquire();
 
@@ -85,37 +88,40 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
     });
   }
 
-  StreamSubscription _generateNetworkStream({
+  StreamSubscription<void> _generateNetworkStream({
     required StockRequest<Key> request,
     required SourceOfTruth<Key, Output>? sourceOfTruth,
     required Mutex emitMutex,
     required StreamController<StockResponse<Output?>> dataStreamController,
   }) =>
-      Stream.fromFuture(_shouldStartNetworkStream(
-        request,
-        dataStreamController,
-      ))
-          .flatMap((shouldFetchNewValue) => _startNetworkFlow(
-                shouldFetchNewValue,
-                dataStreamController,
-                request,
-              ))
-          .listen((response) => emitMutex.protect(() async {
-                if (response is StockResponseData<Output>) {
+      Stream.fromFuture(
+        _shouldStartNetworkStream(request, dataStreamController),
+      )
+          .flatMap(
+            (shouldFetchNewValue) => _startNetworkFlow(
+              shouldFetchNewValue,
+              dataStreamController,
+              request,
+            ),
+          )
+          .listen(
+            (response) => emitMutex.protect(() async {
+              if (response is StockResponseData<Output>) {
+                await _writingLock
+                    .protect(() async => _incrementWritingMap(request, 1));
+                final writerResult = await sourceOfTruth
+                    ?.write(request.key, response.value)
+                    .mapToResponse(ResponseOrigin.fetcher);
+                if (writerResult is StockResponseError) {
+                  dataStreamController.add(writerResult.swapType());
                   await _writingLock
-                      .protect(() async => _incrementWritingMap(request, 1));
-                  var writerResult = await sourceOfTruth
-                      ?.write(request.key, response.value)
-                      .mapToResponse(ResponseOrigin.fetcher);
-                  if (writerResult is StockResponseError) {
-                    dataStreamController.add(writerResult.swapType());
-                    await _writingLock
-                        .protect(() async => _incrementWritingMap(request, -1));
-                  }
-                } else {
-                  dataStreamController.add(response);
+                      .protect(() async => _incrementWritingMap(request, -1));
                 }
-              }));
+              } else {
+                dataStreamController.add(response);
+              }
+            }),
+          );
 
   int _incrementWritingMap(StockRequest<Key> request, int increment) =>
       _writingMap[request.key] = (_writingMap[request.key] ?? 0) + increment;
@@ -143,14 +149,14 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
     if (request.refresh) {
       return true;
     }
-    return await dataStreamController.stream
+    return dataStreamController.stream
         .where((event) => event.origin == ResponseOrigin.sourceOfTruth)
         .where((event) => !event.isLoading)
         .first
         .then((value) => value.getDataOrNull() == null);
   }
 
-  StreamSubscription _generateSourceOfTruthStreamSubscription({
+  StreamSubscription<void> _generateSourceOfTruthStreamSubscription({
     required StockRequest<Key> request,
     required SourceOfTruth<Key, Output> sourceOfTruth,
     required Mutex dbLock,
@@ -169,10 +175,12 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
           }
           return writingKeyData;
         });
-        dataStreamController.add(StockResponseData(
-          fetcherData ? ResponseOrigin.fetcher : response.origin,
-          response.value,
-        ));
+        dataStreamController.add(
+          StockResponseData(
+            fetcherData ? ResponseOrigin.fetcher : response.origin,
+            response.value,
+          ),
+        );
       } else {
         dataStreamController.add(response.swapType());
       }
