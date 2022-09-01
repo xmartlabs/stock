@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/xmartlabs/stock/feature/add-package-logo/img/banner.png" width="100%" alt="stock" />
+<img src="https://raw.githubusercontent.com/xmartlabs/stock/main/img/banner.png" width="100%" alt="stock" />
 
 [![Pub](https://img.shields.io/pub/v/stock.svg?style=flat-square)](https://pub.dartlang.org/packages/stock)
 [![Codecov](https://codecov.io/gh/xmartlabs/stock/branch/main/graph/badge.svg)](https://codecov.io/gh/xmartlabs/stock)
