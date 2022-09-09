@@ -36,6 +36,25 @@ extension StockResponseExtensions<T> on StockResponse<T> {
         onLoading: onLoading ?? (_) => orElse(),
       );
 
+  /// Invoke [onData] if the response is successful, [onLoading] if the response
+  /// is loading, and [onError] if the response is an error.
+  E when<E>({
+    required E Function(ResponseOrigin origin, T value) onData,
+    required E Function(
+      ResponseOrigin origin,
+      Object error,
+      StackTrace? stackTrace,
+    )
+        onError,
+    required E Function(ResponseOrigin origin) onLoading,
+  }) =>
+      map(
+        onData: (value) => onData(value.origin, value.value),
+        onError: (value) =>
+            onError(value.origin, value.error, value.stackTrace),
+        onLoading: (value) => onLoading(value.origin),
+      );
+
   /// Returns the available data or throws error if there is no data.
   T requireData() {
     if (this is StockResponseData<T>) {
