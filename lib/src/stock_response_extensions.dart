@@ -3,6 +3,24 @@ import 'package:stock/src/stock_response.dart';
 
 /// Useful [StockResponse] extensions.
 extension StockResponseExtensions<T> on StockResponse<T> {
+  /// Invoke [onData] if the response is successful, [onLoading] if the response
+  /// is loading, and [onError] if the response is an error.
+  E map<E>({
+    required E Function(StockResponseData<T> value) onData,
+    required E Function(StockResponseError<T> value) onError,
+    required E Function(StockResponseLoading<T> value) onLoading,
+  }) {
+    if (this is StockResponseData<T>) {
+      return onData(this as StockResponseData<T>);
+    } else if (this is StockResponseError<T>) {
+      return onError(this as StockResponseError<T>);
+    } else if (this is StockResponseLoading<T>) {
+      return onLoading(this as StockResponseLoading<T>);
+    } else {
+      throw StockError('Unknown StockResponse type: $this');
+    }
+  }
+
   /// Returns the available data or throws error if there is no data.
   T requireData() {
     if (this is StockResponseData<T>) {
