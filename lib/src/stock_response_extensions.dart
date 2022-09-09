@@ -55,6 +55,22 @@ extension StockResponseExtensions<T> on StockResponse<T> {
         onLoading: (value) => onLoading(value.origin),
       );
 
+  /// Invoke [onData] or [orElse] as fallback if the response is successful,
+  /// [onLoading] or [orElse] as fallback if the response is loading, and
+  /// [onError] or [orElse] as fallback if the response is an error.
+  E maybeWhen<E>({
+    E Function(ResponseOrigin origin, T value)? onData,
+    E Function(ResponseOrigin origin, Object error, StackTrace? stackTrace)?
+        onError,
+    E Function(ResponseOrigin origin)? onLoading,
+    required E Function() orElse,
+  }) =>
+      when(
+        onData: onData ?? (_, __) => orElse(),
+        onError: onError ?? (_, __, ___) => orElse(),
+        onLoading: onLoading ?? (_) => orElse(),
+      );
+
   /// Returns the available data or throws error if there is no data.
   T requireData() {
     if (this is StockResponseData<T>) {
