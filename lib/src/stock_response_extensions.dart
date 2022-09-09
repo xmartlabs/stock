@@ -6,16 +6,16 @@ extension StockResponseExtensions<T> on StockResponse<T> {
   /// Invoke [onData] if the response is successful, [onLoading] if the response
   /// is loading, and [onError] if the response is an error.
   E map<E>({
+    required E Function(StockResponseLoading<T> value) onLoading,
     required E Function(StockResponseData<T> value) onData,
     required E Function(StockResponseError<T> value) onError,
-    required E Function(StockResponseLoading<T> value) onLoading,
   }) {
-    if (this is StockResponseData<T>) {
+    if (this is StockResponseLoading<T>) {
+      return onLoading(this as StockResponseLoading<T>);
+    } else if (this is StockResponseData<T>) {
       return onData(this as StockResponseData<T>);
     } else if (this is StockResponseError<T>) {
       return onError(this as StockResponseError<T>);
-    } else if (this is StockResponseLoading<T>) {
-      return onLoading(this as StockResponseLoading<T>);
     } else {
       throw StockError('Unknown StockResponse type: $this');
     }
@@ -25,50 +25,43 @@ extension StockResponseExtensions<T> on StockResponse<T> {
   /// [onLoading] or [orElse] as fallback if the response is loading, and
   /// [onError] or [orElse] as fallback if the response is an error.
   E maybeMap<E>({
+    E Function(StockResponseLoading<T> value)? onLoading,
     E Function(StockResponseData<T> value)? onData,
     E Function(StockResponseError<T> value)? onError,
-    E Function(StockResponseLoading<T> value)? onLoading,
     required E Function() orElse,
   }) =>
       map(
+        onLoading: onLoading ?? (_) => orElse(),
         onData: onData ?? (_) => orElse(),
         onError: onError ?? (_) => orElse(),
-        onLoading: onLoading ?? (_) => orElse(),
       );
 
   /// Invoke [onData] if the response is successful, [onLoading] if the response
   /// is loading, and [onError] if the response is an error.
   E when<E>({
-    required E Function(ResponseOrigin origin, T value) onData,
-    required E Function(
-      ResponseOrigin origin,
-      Object error,
-      StackTrace? stackTrace,
-    )
-        onError,
-    required E Function(ResponseOrigin origin) onLoading,
+    required E Function() onLoading,
+    required E Function(T data) onData,
+    required E Function(Object error, StackTrace? stackTrace) onError,
   }) =>
       map(
-        onData: (value) => onData(value.origin, value.value),
-        onError: (value) =>
-            onError(value.origin, value.error, value.stackTrace),
-        onLoading: (value) => onLoading(value.origin),
+        onLoading: (value) => onLoading(),
+        onData: (value) => onData(value.value),
+        onError: (value) => onError(value.error, value.stackTrace),
       );
 
   /// Invoke [onData] or [orElse] as fallback if the response is successful,
   /// [onLoading] or [orElse] as fallback if the response is loading, and
   /// [onError] or [orElse] as fallback if the response is an error.
   E maybeWhen<E>({
-    E Function(ResponseOrigin origin, T value)? onData,
-    E Function(ResponseOrigin origin, Object error, StackTrace? stackTrace)?
-        onError,
-    E Function(ResponseOrigin origin)? onLoading,
+    E Function()? onLoading,
+    E Function(T data)? onData,
+    E Function(Object error, StackTrace? stackTrace)? onError,
     required E Function() orElse,
   }) =>
       when(
-        onData: onData ?? (_, __) => orElse(),
-        onError: onError ?? (_, __, ___) => orElse(),
-        onLoading: onLoading ?? (_) => orElse(),
+        onLoading: onLoading ?? () => orElse(),
+        onData: onData ?? (_) => orElse(),
+        onError: onError ?? (_, __) => orElse(),
       );
 
   /// Returns the available data or throws error if there is no data.
