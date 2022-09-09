@@ -21,6 +21,21 @@ extension StockResponseExtensions<T> on StockResponse<T> {
     }
   }
 
+  /// Invoke [onData] or [orElse] as fallback if the response is successful,
+  /// [onLoading] or [orElse] as fallback if the response is loading, and
+  /// [onError] or [orElse] as fallback if the response is an error.
+  E maybeMap<E>({
+    E Function(StockResponseData<T> value)? onData,
+    E Function(StockResponseError<T> value)? onError,
+    E Function(StockResponseLoading<T> value)? onLoading,
+    required E Function() orElse,
+  }) =>
+      map(
+        onData: onData ?? (_) => orElse(),
+        onError: onError ?? (_) => orElse(),
+        onLoading: onLoading ?? (_) => orElse(),
+      );
+
   /// Returns the available data or throws error if there is no data.
   T requireData() {
     if (this is StockResponseData<T>) {
