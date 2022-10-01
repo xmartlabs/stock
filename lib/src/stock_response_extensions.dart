@@ -39,29 +39,43 @@ extension StockResponseExtensions<T> on StockResponse<T> {
   /// Invoke [onData] if the response is successful, [onLoading] if the response
   /// is loading, and [onError] if the response is an error.
   E when<E>({
-    required E Function() onLoading,
-    required E Function(T data) onData,
-    required E Function(Object error, StackTrace? stackTrace) onError,
+    required E Function(ResponseOrigin origin) onLoading,
+    required E Function(ResponseOrigin origin, T data) onData,
+    required E Function(
+      ResponseOrigin origin,
+      Object error,
+      StackTrace? stackTrace,
+    )
+        onError,
   }) =>
       map(
-        onLoading: (value) => onLoading(),
-        onData: (value) => onData(value.value),
-        onError: (value) => onError(value.error, value.stackTrace),
+        onLoading: (value) => onLoading(value.origin),
+        onData: (value) => onData(value.origin, value.value),
+        onError: (value) => onError(
+          value.origin,
+          value.error,
+          value.stackTrace,
+        ),
       );
 
   /// Invoke [onData] or [orElse] as fallback if the response is successful,
   /// [onLoading] or [orElse] as fallback if the response is loading, and
   /// [onError] or [orElse] as fallback if the response is an error.
   E maybeWhen<E>({
-    E Function()? onLoading,
-    E Function(T data)? onData,
-    E Function(Object error, StackTrace? stackTrace)? onError,
-    required E Function() orElse,
+    E Function(ResponseOrigin origin)? onLoading,
+    E Function(ResponseOrigin origin, T data)? onData,
+    E Function(
+      ResponseOrigin origin,
+      Object error,
+      StackTrace? stackTrace,
+    )?
+        onError,
+    required E Function(ResponseOrigin origin) orElse,
   }) =>
       when(
-        onLoading: onLoading ?? () => orElse(),
-        onData: onData ?? (_) => orElse(),
-        onError: onError ?? (_, __) => orElse(),
+        onLoading: onLoading ?? (origin) => orElse(origin),
+        onData: onData ?? (origin, _) => orElse(origin),
+        onError: onError ?? (origin, _, __) => orElse(origin),
       );
 
   /// Returns the available data or throws error if there is no data.
