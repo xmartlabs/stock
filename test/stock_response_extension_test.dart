@@ -1,3 +1,4 @@
+import 'package:mockito/mockito.dart';
 import 'package:stock/src/errors.dart';
 import 'package:stock/src/extensions/stock_response_internal_extensions.dart';
 import 'package:stock/src/stock_response.dart';
@@ -143,7 +144,280 @@ void main() {
       );
     });
   });
+
+  group('Map', () {
+    test('Map for loading', () {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).map(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_) => mockDataCallback(),
+        onError: (_) => mockErrorCallback(),
+      );
+      verify(mockLoadingCallback()).called(1);
+      verifyNever(mockDataCallback());
+      verifyNever(mockErrorCallback());
+    });
+
+    test('Map for data', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      const StockResponse.data(ResponseOrigin.fetcher, 1).map(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_) => mockDataCallback(),
+        onError: (_) => mockErrorCallback(),
+      );
+      verifyNever(mockLoadingCallback());
+      verify(mockDataCallback()).called(1);
+      verifyNever(mockErrorCallback());
+    });
+
+    test('Map for error', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).map(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_) => mockDataCallback(),
+        onError: (_) => mockErrorCallback(),
+      );
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockDataCallback());
+      verify(mockErrorCallback()).called(1);
+    });
+  });
+
+  group('MaybeMap', () {
+    test('MaybeMap for loading', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).maybeMap(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_) => mockDataCallback(),
+        onError: (_) => mockErrorCallback(),
+        orElse: () => throw Exception('Should not be called'),
+      );
+      verify(mockLoadingCallback()).called(1);
+      verifyNever(mockDataCallback());
+      verifyNever(mockErrorCallback());
+    });
+
+    test('MaybeMap for loading with else', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).maybeMap(
+        onData: (_) => mockDataCallback(),
+        onError: (_) => mockErrorCallback(),
+        orElse: mockLoadingCallback,
+      );
+      verify(mockLoadingCallback()).called(1);
+      verifyNever(mockDataCallback());
+      verifyNever(mockErrorCallback());
+    });
+
+    test('MaybeMap for data', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      const StockResponse.data(ResponseOrigin.fetcher, 1).maybeMap(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_) => mockDataCallback(),
+        onError: (_) => mockErrorCallback(),
+        orElse: () => throw Exception('Should not be called'),
+      );
+      verifyNever(mockLoadingCallback());
+      verify(mockDataCallback()).called(1);
+      verifyNever(mockErrorCallback());
+    });
+
+    test('MaybeMap for data with else', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      const StockResponse.data(ResponseOrigin.fetcher, 1).maybeMap(
+        onLoading: (_) => mockLoadingCallback(),
+        onError: (_) => mockErrorCallback(),
+        orElse: mockDataCallback,
+      );
+      verifyNever(mockLoadingCallback());
+      verify(mockDataCallback()).called(1);
+      verifyNever(mockErrorCallback());
+    });
+
+    test('MaybeMap for error', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).maybeMap(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_) => mockDataCallback(),
+        onError: (_) => mockErrorCallback(),
+        orElse: () => throw Exception('Should not be called'),
+      );
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockDataCallback());
+      verify(mockErrorCallback()).called(1);
+    });
+
+    test('MaybeMap for error with else', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).maybeMap(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_) => mockDataCallback(),
+        orElse: mockErrorCallback,
+      );
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockDataCallback());
+      verify(mockErrorCallback()).called(1);
+    });
+  });
+
+  group('When', () {
+    test('When for loading', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).when(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_, __) => mockDataCallback(),
+        onError: (_, __, ___) => mockErrorCallback(),
+      );
+      verify(mockLoadingCallback()).called(1);
+      verifyNever(mockDataCallback());
+      verifyNever(mockErrorCallback());
+    });
+
+    test('When for data', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      const StockResponse.data(ResponseOrigin.fetcher, 1).when(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_, __) => mockDataCallback(),
+        onError: (_, __, ___) => mockErrorCallback(),
+      );
+      verifyNever(mockLoadingCallback());
+      verify(mockDataCallback()).called(1);
+      verifyNever(mockErrorCallback());
+    });
+
+    test('When for error', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).when(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_, __) => mockDataCallback(),
+        onError: (_, __, ___) => mockErrorCallback(),
+      );
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockDataCallback());
+      verify(mockErrorCallback()).called(1);
+    });
+  });
+
+  group('MaybeWhen', () {
+    test('MaybeWhen for loading', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).maybeWhen(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_, __) => mockDataCallback(),
+        onError: (_, __, ___) => mockErrorCallback(),
+        orElse: (_) => throw Exception('Should not be called'),
+      );
+      verify(mockLoadingCallback()).called(1);
+      verifyNever(mockDataCallback());
+      verifyNever(mockErrorCallback());
+    });
+
+    test('MaybeWhen for loading with else', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).maybeWhen(
+        onData: (_, __) => mockDataCallback(),
+        onError: (_, __, ___) => mockErrorCallback(),
+        orElse: (_) => mockLoadingCallback(),
+      );
+      verify(mockLoadingCallback()).called(1);
+      verifyNever(mockDataCallback());
+      verifyNever(mockErrorCallback());
+    });
+
+    test('MaybeWhen for data', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      const StockResponse.data(ResponseOrigin.fetcher, 1).maybeWhen(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_, __) => mockDataCallback(),
+        onError: (_, __, ___) => mockErrorCallback(),
+        orElse: (_) => throw Exception('Should not be called'),
+      );
+      verifyNever(mockLoadingCallback());
+      verify(mockDataCallback()).called(1);
+      verifyNever(mockErrorCallback());
+    });
+
+    test('MaybeWhen for data with else', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      const StockResponse.data(ResponseOrigin.fetcher, 1).maybeWhen(
+        onLoading: (_) => mockLoadingCallback(),
+        onError: (_, __, ___) => mockErrorCallback(),
+        orElse: (_) => mockDataCallback(),
+      );
+      verifyNever(mockLoadingCallback());
+      verify(mockDataCallback()).called(1);
+      verifyNever(mockErrorCallback());
+    });
+
+    test('MaybeWhen for error', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).maybeWhen(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_, __) => mockDataCallback(),
+        onError: (_, __, ___) => mockErrorCallback(),
+        orElse: (_) => throw Exception('Should not be called'),
+      );
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockDataCallback());
+      verify(mockErrorCallback()).called(1);
+    });
+
+    test('MaybeWhen for error with else', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).maybeWhen(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_, __) => mockDataCallback(),
+        orElse: (_) => mockErrorCallback(),
+      );
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockDataCallback());
+      verify(mockErrorCallback()).called(1);
+    });
+  });
 }
+
+// ignore: one_member_abstracts
+abstract class Callback {
+  void call();
+}
+
+class MockCallback extends Mock implements Callback {}
 
 class _FakeType implements StockResponse<int> {
   @override
