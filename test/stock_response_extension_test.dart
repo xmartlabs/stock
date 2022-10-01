@@ -187,6 +187,29 @@ void main() {
       verifyNever(mockDataCallback());
       verify(mockErrorCallback()).called(1);
     });
+
+    test('Map with unknown type', () async {
+      final mockLoadingCallback = MockCallback();
+      final mockDataCallback = MockCallback();
+      final mockErrorCallback = MockCallback();
+      expect(
+        () {
+          _FakeType().map(
+            onLoading: (_) => mockLoadingCallback(),
+            onData: (_) => mockDataCallback(),
+            onError: (_) => mockErrorCallback(),
+          );
+        },
+        throwsA(
+          (dynamic e) =>
+              e is StockError &&
+              e.message.startsWith('Unknown StockResponse type: '),
+        ),
+      );
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockDataCallback());
+      verifyNever(mockErrorCallback());
+    });
   });
 
   group('MaybeMap', () {
