@@ -36,9 +36,10 @@ extension StockResponseExtensions<T> on StockResponse<T> {
         onError: onError ?? (_) => orElse(),
       );
 
-  /// Invoke [onData] or [orElse] as fallback if the response is successful,
-  /// [onLoading] or [orElse] as fallback if the response is loading, and
-  /// [onError] or [orElse] as fallback if the response is an error.
+  /// Invoke [onData] if the response is successful,
+  /// [onLoading] if the response is loading, and
+  /// [onError] if the response is an error.
+  /// If the callback is not provided, null is returned.
   E? mapOrNull<E>({
     E Function(StockResponseLoading<T> value)? onLoading,
     E Function(StockResponseData<T> value)? onData,
