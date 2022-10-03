@@ -36,6 +36,21 @@ extension StockResponseExtensions<T> on StockResponse<T> {
         onError: onError ?? (_) => orElse(),
       );
 
+  /// Invoke [onData] or [orElse] as fallback if the response is successful,
+  /// [onLoading] or [orElse] as fallback if the response is loading, and
+  /// [onError] or [orElse] as fallback if the response is an error.
+  E? mapOrNull<E>({
+    E Function(StockResponseLoading<T> value)? onLoading,
+    E Function(StockResponseData<T> value)? onData,
+    E Function(StockResponseError<T> value)? onError,
+  }) =>
+      maybeMap(
+        onLoading: onLoading,
+        onData: onData,
+        onError: onError,
+        orElse: () => null,
+      );
+
   /// Invoke [onData] if the response is successful, [onLoading] if the response
   /// is loading, and [onError] if the response is an error.
   E when<E>({
@@ -56,6 +71,27 @@ extension StockResponseExtensions<T> on StockResponse<T> {
           value.error,
           value.stackTrace,
         ),
+      );
+
+  /// Invoke [onData] if the response is successful,
+  /// [onLoading] if the response is loading, and
+  /// [onError] if the response is an error.
+  /// If the callback is not provided, null is returned.
+  E? whenOrNull<E>({
+    E Function(ResponseOrigin origin)? onLoading,
+    E Function(ResponseOrigin origin, T data)? onData,
+    E Function(
+      ResponseOrigin origin,
+      Object error,
+      StackTrace? stackTrace,
+    )?
+        onError,
+  }) =>
+      maybeWhen(
+        onLoading: onLoading,
+        onData: onData,
+        onError: onError,
+        orElse: (origin) => null,
       );
 
   /// Invoke [onData] or [orElse] as fallback if the response is successful,
