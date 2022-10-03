@@ -25,8 +25,8 @@ Although you can use it without a local source, the greatest benefit comes from 
 A [`Stock`] is responsible for managing a particular data request.
 
 It is based on two important classes:
-- [`Fetcher`]: defines how data will be fetched over network.
-- [`SourceOfTruth`]: defines how local data will be read and written in your local cache. Although `Stock` can be used without it, its use is recommended.
+- [`Fetcher`]: defines how data will be fetched over the network.
+- [`SourceOfTruth`]: defines how local data will be read and written in your local cache. Although `Stock` can be used without it, we recommend its usage.
 
 `Stock` uses generic keys as identifiers for data.
 A key can be any value object that properly implements `toString()`, `equals()` and `hashCode()`.
