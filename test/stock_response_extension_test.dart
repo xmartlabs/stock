@@ -35,6 +35,39 @@ void main() {
     });
   });
 
+  group('Require error extensions', () {
+    test('requireError of an error throws the exception', () async {
+      final customEx = Exception('Custom ex');
+      expect(
+        StockResponseError<dynamic>(ResponseOrigin.fetcher, customEx)
+            .requireError(),
+        equals(customEx),
+      );
+    });
+    test('requireError of a loading response throws a exception', () async {
+      expect(
+        const StockResponseLoading<dynamic>(ResponseOrigin.fetcher)
+            .requireError,
+        throwsA(
+          (dynamic e) =>
+              e is StockError &&
+              e.toString().contains('Response is not an StockResponseError'),
+        ),
+      );
+    });
+    test('requireError of a data response throws a exception', () async {
+      expect(
+        const StockResponseData<dynamic>(ResponseOrigin.fetcher, 1)
+            .requireError,
+        throwsA(
+          (dynamic e) =>
+              e is StockError &&
+              e.toString().contains('Response is not an StockResponseError'),
+        ),
+      );
+    });
+  });
+
   group('throwIfError extension', () {
     test('throwIfError of an error throws the exception', () async {
       final customEx = Exception('Custom ex');
@@ -129,9 +162,7 @@ void main() {
         throwsA(
           (dynamic e) =>
               e is StockError &&
-              e.toString() ==
-                  'StockError: Type error requireData expect either Success, '
-                      'Error but was given _FakeType',
+              e.toString().contains('Unknown StockResponse type:'),
         ),
       );
     });
