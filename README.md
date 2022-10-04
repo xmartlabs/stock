@@ -104,9 +104,9 @@ Each `StockResponse` includes an `origin` field which specifies where the event 
       .stream('user_id', refresh: true)
       .listen((StockResponse<List<Tweet>> stockResponse) {
     stockResponse.when(
-      onLoading: (_) => _displayLoadingIndicator(),
-      onData: (_, data) => _displayTweetsInUI(data),
-      onError: (_, error, __) => _displayErrorInUi(error),
+      onLoading: (origin) => _displayLoadingIndicator(),
+      onData: (origin, data) => _displayTweetsInUI(data),
+      onError: (origin, error, stacktrace) => _displayErrorInUi(error),
     );
   });
 ```
