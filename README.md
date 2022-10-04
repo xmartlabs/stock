@@ -101,15 +101,13 @@ Each `StockResponse` includes an `origin` field which specifies where the event 
 
 ```dart
   stock
-      .stream('key', refresh: true)
+      .stream('user_id', refresh: true)
       .listen((StockResponse<List<Tweet>> stockResponse) {
-    if (stockResponse is StockResponseLoading) {
-      _displayLoadingIndicator();
-    } else if (stockResponse is StockResponseData) {
-      _displayTweetsInUI((stockResponse is StockResponseData).data);
-    } else {
-      _displayErrorInUi((stockResponse as StockResponseError).error);
-    }
+    stockResponse.when(
+      onLoading: (_) => _displayLoadingIndicator(),
+      onData: (_, data) => _displayTweetsInUI(data),
+      onError: (_, error, __) => _displayErrorInUi(error),
+    );
   });
 ```
 
