@@ -1,7 +1,7 @@
 ## 1.0.0
 * Document improvements ([#23](https://github.com/xmartlabs/stock/pull/23))
 * CI improvements ([#22](https://github.com/xmartlabs/stock/pull/22))
-* Add `map` and `when` extension methods over `StockResponse`. Thanks [Leynier](https://github.com/leynier) for PR ([#21](https://github.com/xmartlabs/stock/pull/21)).
+* Add `map` and `when` extension methods over `StockResponse` ([#21](https://github.com/xmartlabs/stock/pull/21), [#27](https://github.com/xmartlabs/stock/pull/27)). Thanks [Leynier](https://github.com/leynier) for PR ([#21](https://github.com/xmartlabs/stock/pull/21)).
 
 ## 0.0.2
 
