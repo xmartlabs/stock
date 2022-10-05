@@ -7,8 +7,11 @@ dart pub get
 echo ':: Check code format ::'
 dart format --set-exit-if-changed . || { echo -e "${RED}Invalid format" ; exit 1; }
 
-echo ':: Run linter ::'
+echo ':: Run dart linter ::'
 dart analyze --fatal-infos || { echo -e "${RED}Linter error" ; exit 1; }
+
+echo ':: Run flutter linter ::'
+flutter analyze --fatal-infos || { echo -e "${RED}Linter error" ; exit 1; }
 
 result=$(dart run dart_code_metrics:metrics analyze lib  --fatal-style --fatal-performance --fatal-warnings)
 echo "$result"

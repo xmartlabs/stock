@@ -3,11 +3,13 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:stock/src/source_of_truth.dart' as _i4;
-import 'package:stock/src/implementations/factory_fetcher.dart' as _i2;
+import 'package:stock/src/implementations/factory_fetcher.dart' as _i3;
+import 'package:stock/src/source_of_truth.dart' as _i5;
+
+import 'stock_response_extension_test.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -20,22 +22,48 @@ import 'package:stock/src/implementations/factory_fetcher.dart' as _i2;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
+/// A class which mocks [CallbackVoid].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockCallbackVoid extends _i1.Mock implements _i2.CallbackVoid {
+  MockCallbackVoid() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  void call() => super.noSuchMethod(Invocation.method(#call, []),
+      returnValueForMissingStub: null);
+}
+
+/// A class which mocks [CallbackInt].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockCallbackInt extends _i1.Mock implements _i2.CallbackInt {
+  MockCallbackInt() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  int call() =>
+      (super.noSuchMethod(Invocation.method(#call, []), returnValue: 0) as int);
+}
+
 /// A class which mocks [FutureFetcher].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockFutureFetcher<Key, Output> extends _i1.Mock
-    implements _i2.FutureFetcher<Key, Output> {
+    implements _i3.FutureFetcher<Key, Output> {
   MockFutureFetcher() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Stream<Output> Function(Key) get factory =>
+  _i4.Stream<Output> Function(Key) get factory =>
       (super.noSuchMethod(Invocation.getter(#factory),
-              returnValue: (Key key) => _i3.Stream<Output>.empty())
-          as _i3.Stream<Output> Function(Key));
+              returnValue: (Key key) => _i4.Stream<Output>.empty())
+          as _i4.Stream<Output> Function(Key));
   @override
-  set factory(_i3.Stream<Output> Function(Key)? _factory) =>
+  set factory(_i4.Stream<Output> Function(Key)? _factory) =>
       super.noSuchMethod(Invocation.setter(#factory, _factory),
           returnValueForMissingStub: null);
 }
@@ -44,18 +72,18 @@ class MockFutureFetcher<Key, Output> extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockStreamFetcher<Key, Output> extends _i1.Mock
-    implements _i2.StreamFetcher<Key, Output> {
+    implements _i3.StreamFetcher<Key, Output> {
   MockStreamFetcher() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Stream<Output> Function(Key) get factory =>
+  _i4.Stream<Output> Function(Key) get factory =>
       (super.noSuchMethod(Invocation.getter(#factory),
-              returnValue: (Key key) => _i3.Stream<Output>.empty())
-          as _i3.Stream<Output> Function(Key));
+              returnValue: (Key key) => _i4.Stream<Output>.empty())
+          as _i4.Stream<Output> Function(Key));
   @override
-  set factory(_i3.Stream<Output> Function(Key)? _factory) =>
+  set factory(_i4.Stream<Output> Function(Key)? _factory) =>
       super.noSuchMethod(Invocation.setter(#factory, _factory),
           returnValueForMissingStub: null);
 }
@@ -64,18 +92,18 @@ class MockStreamFetcher<Key, Output> extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockSourceOfTruth<Key, T> extends _i1.Mock
-    implements _i4.SourceOfTruth<Key, T> {
+    implements _i5.SourceOfTruth<Key, T> {
   MockSourceOfTruth() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Stream<T?> reader(Key? key) =>
+  _i4.Stream<T?> reader(Key? key) =>
       (super.noSuchMethod(Invocation.method(#reader, [key]),
-          returnValue: _i3.Stream<T?>.empty()) as _i3.Stream<T?>);
+          returnValue: _i4.Stream<T?>.empty()) as _i4.Stream<T?>);
   @override
-  _i3.Future<void> write(Key? key, T? value) => (super.noSuchMethod(
+  _i4.Future<void> write(Key? key, T? value) => (super.noSuchMethod(
       Invocation.method(#write, [key, value]),
-      returnValue: _i3.Future<void>.value(),
-      returnValueForMissingStub: _i3.Future<void>.value()) as _i3.Future<void>);
+      returnValue: _i4.Future<void>.value(),
+      returnValueForMissingStub: _i4.Future<void>.value()) as _i4.Future<void>);
 }

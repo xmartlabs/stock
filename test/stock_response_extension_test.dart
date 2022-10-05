@@ -5,6 +5,8 @@ import 'package:stock/src/stock_response.dart';
 import 'package:stock/src/stock_response_extensions.dart';
 import 'package:test/test.dart';
 
+import 'common_mocks.mocks.dart';
+
 void main() {
   group('Require data extensions', () {
     test('requireData of an error throws the exception', () async {
@@ -32,6 +34,40 @@ void main() {
       );
     });
   });
+
+  group('Require error extensions', () {
+    test('requireError of an error throws the exception', () async {
+      final customEx = Exception('Custom ex');
+      expect(
+        StockResponseError<dynamic>(ResponseOrigin.fetcher, customEx)
+            .requireError(),
+        equals(customEx),
+      );
+    });
+    test('requireError of a loading response throws a exception', () async {
+      expect(
+        const StockResponseLoading<dynamic>(ResponseOrigin.fetcher)
+            .requireError,
+        throwsA(
+          (dynamic e) =>
+              e is StockError &&
+              e.toString().contains('Response is not an StockResponseError'),
+        ),
+      );
+    });
+    test('requireError of a data response throws a exception', () async {
+      expect(
+        const StockResponseData<dynamic>(ResponseOrigin.fetcher, 1)
+            .requireError,
+        throwsA(
+          (dynamic e) =>
+              e is StockError &&
+              e.toString().contains('Response is not an StockResponseError'),
+        ),
+      );
+    });
+  });
+
   group('throwIfError extension', () {
     test('throwIfError of an error throws the exception', () async {
       final customEx = Exception('Custom ex');
@@ -49,6 +85,7 @@ void main() {
       const StockResponse.data(ResponseOrigin.fetcher, 1).throwIfError();
     });
   });
+
   group('Get data extensions', () {
     test('getData of an error returns null', () async {
       final customEx = Exception('Custom ex');
@@ -72,6 +109,7 @@ void main() {
       );
     });
   });
+
   group('Property extensions', () {
     test('Loading returns true if loading', () async {
       expect(
@@ -124,9 +162,7 @@ void main() {
         throwsA(
           (dynamic e) =>
               e is StockError &&
-              e.toString() ==
-                  'StockError: Type error requireData expect either Success, '
-                      'Error but was given _FakeType',
+              e.toString().contains('Unknown StockResponse type:'),
         ),
       );
     });
@@ -147,9 +183,9 @@ void main() {
 
   group('Map', () {
     test('Map for loading', () {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).map(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_) => mockDataCallback(),
@@ -161,9 +197,9 @@ void main() {
     });
 
     test('Map for data', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       const StockResponse.data(ResponseOrigin.fetcher, 1).map(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_) => mockDataCallback(),
@@ -175,9 +211,9 @@ void main() {
     });
 
     test('Map for error', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).map(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_) => mockDataCallback(),
@@ -189,9 +225,9 @@ void main() {
     });
 
     test('Map with unknown type', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       expect(
         () {
           _FakeType().map(
@@ -214,9 +250,9 @@ void main() {
 
   group('MaybeMap', () {
     test('MaybeMap for loading', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).maybeMap(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_) => mockDataCallback(),
@@ -229,9 +265,9 @@ void main() {
     });
 
     test('MaybeMap for loading with else', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).maybeMap(
         onData: (_) => mockDataCallback(),
         onError: (_) => mockErrorCallback(),
@@ -243,9 +279,9 @@ void main() {
     });
 
     test('MaybeMap for data', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       const StockResponse.data(ResponseOrigin.fetcher, 1).maybeMap(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_) => mockDataCallback(),
@@ -258,9 +294,9 @@ void main() {
     });
 
     test('MaybeMap for data with else', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       const StockResponse.data(ResponseOrigin.fetcher, 1).maybeMap(
         onLoading: (_) => mockLoadingCallback(),
         onError: (_) => mockErrorCallback(),
@@ -272,9 +308,9 @@ void main() {
     });
 
     test('MaybeMap for error', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).maybeMap(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_) => mockDataCallback(),
@@ -287,9 +323,9 @@ void main() {
     });
 
     test('MaybeMap for error with else', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).maybeMap(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_) => mockDataCallback(),
@@ -303,9 +339,9 @@ void main() {
 
   group('When', () {
     test('When for loading', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).when(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_, __) => mockDataCallback(),
@@ -317,9 +353,9 @@ void main() {
     });
 
     test('When for data', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       const StockResponse.data(ResponseOrigin.fetcher, 1).when(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_, __) => mockDataCallback(),
@@ -331,9 +367,9 @@ void main() {
     });
 
     test('When for error', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).when(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_, __) => mockDataCallback(),
@@ -347,9 +383,9 @@ void main() {
 
   group('MaybeWhen', () {
     test('MaybeWhen for loading', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).maybeWhen(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_, __) => mockDataCallback(),
@@ -362,9 +398,9 @@ void main() {
     });
 
     test('MaybeWhen for loading with else', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).maybeWhen(
         onData: (_, __) => mockDataCallback(),
         onError: (_, __, ___) => mockErrorCallback(),
@@ -376,9 +412,9 @@ void main() {
     });
 
     test('MaybeWhen for data', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       const StockResponse.data(ResponseOrigin.fetcher, 1).maybeWhen(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_, __) => mockDataCallback(),
@@ -391,9 +427,9 @@ void main() {
     });
 
     test('MaybeWhen for data with else', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       const StockResponse.data(ResponseOrigin.fetcher, 1).maybeWhen(
         onLoading: (_) => mockLoadingCallback(),
         onError: (_, __, ___) => mockErrorCallback(),
@@ -405,9 +441,9 @@ void main() {
     });
 
     test('MaybeWhen for error', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).maybeWhen(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_, __) => mockDataCallback(),
@@ -420,9 +456,9 @@ void main() {
     });
 
     test('MaybeWhen for error with else', () async {
-      final mockLoadingCallback = MockCallback();
-      final mockDataCallback = MockCallback();
-      final mockErrorCallback = MockCallback();
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
       StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).maybeWhen(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_, __) => mockDataCallback(),
@@ -433,14 +469,195 @@ void main() {
       verify(mockErrorCallback()).called(1);
     });
   });
+
+  group('WhenOrNull', () {
+    test('WhenOrNull for loading', () async {
+      final mockLoadingCallback = MockCallbackInt();
+      final mockDataCallback = MockCallbackInt();
+      final mockErrorCallback = MockCallbackInt();
+      when(mockLoadingCallback.call()).thenAnswer((_) => 1);
+
+      const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).whenOrNull(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_, __) => mockDataCallback(),
+        onError: (_, __, ___) => mockErrorCallback(),
+      );
+      verify(mockLoadingCallback()).called(1);
+      verifyNever(mockDataCallback());
+      verifyNever(mockErrorCallback());
+    });
+
+    test('WhenOrNull for loading without callback', () async {
+      final mockLoadingCallback = MockCallbackInt();
+      final mockDataCallback = MockCallbackInt();
+      final mockErrorCallback = MockCallbackInt();
+      final value = const StockResponseLoading<dynamic>(ResponseOrigin.fetcher)
+          .whenOrNull(
+        onData: (_, __) => mockDataCallback(),
+        onError: (_, __, ___) => mockErrorCallback(),
+      );
+      expect(value, equals(null));
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockDataCallback());
+      verifyNever(mockErrorCallback());
+    });
+
+    test('WhenOrNull for data', () async {
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
+      const StockResponse.data(ResponseOrigin.fetcher, 1).whenOrNull(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_, __) => mockDataCallback(),
+        onError: (_, __, ___) => mockErrorCallback(),
+      );
+      verifyNever(mockLoadingCallback());
+      verify(mockDataCallback()).called(1);
+      verifyNever(mockErrorCallback());
+    });
+
+    test('WhenOrNull for data without callback', () async {
+      final mockLoadingCallback = MockCallbackInt();
+      final mockErrorCallback = MockCallbackInt();
+      final value =
+          const StockResponse.data(ResponseOrigin.fetcher, 1).whenOrNull(
+        onLoading: (_) => mockLoadingCallback(),
+        onError: (_, __, ___) => mockErrorCallback(),
+      );
+      expect(value, equals(null));
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockErrorCallback());
+    });
+
+    test('WhenOrNull for error', () async {
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
+      StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).whenOrNull(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_, __) => mockDataCallback(),
+        onError: (_, __, ___) => mockErrorCallback(),
+      );
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockDataCallback());
+      verify(mockErrorCallback()).called(1);
+    });
+
+    test('WhenOrNull for error without callback', () async {
+      final mockLoadingCallback = MockCallbackInt();
+      final mockDataCallback = MockCallbackInt();
+      final value = StockResponseError<dynamic>(ResponseOrigin.fetcher, Error())
+          .whenOrNull(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_, __) => mockDataCallback(),
+      );
+      expect(value, equals(null));
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockDataCallback());
+    });
+  });
+
+  group('MapOrNull', () {
+    test('MapOrNull for loading', () async {
+      final mockLoadingCallback = MockCallbackInt();
+      final mockDataCallback = MockCallbackInt();
+      final mockErrorCallback = MockCallbackInt();
+      when(mockLoadingCallback.call()).thenAnswer((_) => 1);
+
+      const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).mapOrNull(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_) => mockDataCallback(),
+        onError: (_) => mockErrorCallback(),
+      );
+      verify(mockLoadingCallback()).called(1);
+      verifyNever(mockDataCallback());
+      verifyNever(mockErrorCallback());
+    });
+
+    test('MapOrNull for loading without callback', () async {
+      final mockLoadingCallback = MockCallbackInt();
+      final mockDataCallback = MockCallbackInt();
+      final mockErrorCallback = MockCallbackInt();
+      final value =
+          const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).mapOrNull(
+        onData: (_) => mockDataCallback(),
+        onError: (_) => mockErrorCallback(),
+      );
+      expect(value, equals(null));
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockDataCallback());
+      verifyNever(mockErrorCallback());
+    });
+
+    test('MapOrNull for data', () async {
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
+      const StockResponse.data(ResponseOrigin.fetcher, 1).mapOrNull(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_) => mockDataCallback(),
+        onError: (_) => mockErrorCallback(),
+      );
+      verifyNever(mockLoadingCallback());
+      verify(mockDataCallback()).called(1);
+      verifyNever(mockErrorCallback());
+    });
+
+    test('MapOrNull for data without callback', () async {
+      final mockLoadingCallback = MockCallbackInt();
+      final mockErrorCallback = MockCallbackInt();
+      final value =
+          const StockResponse.data(ResponseOrigin.fetcher, 1).mapOrNull(
+        onLoading: (_) => mockLoadingCallback(),
+        onError: (_) => mockErrorCallback(),
+      );
+      expect(value, equals(null));
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockErrorCallback());
+    });
+
+    test('MapOrNull for error', () async {
+      final mockLoadingCallback = MockCallbackVoid();
+      final mockDataCallback = MockCallbackVoid();
+      final mockErrorCallback = MockCallbackVoid();
+      StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).mapOrNull(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_) => mockDataCallback(),
+        onError: (_) => mockErrorCallback(),
+      );
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockDataCallback());
+      verify(mockErrorCallback()).called(1);
+    });
+
+    test('MapOrNull for error without callback', () async {
+      final mockLoadingCallback = MockCallbackInt();
+      final mockDataCallback = MockCallbackInt();
+      final value = StockResponseError<dynamic>(ResponseOrigin.fetcher, Error())
+          .mapOrNull(
+        onLoading: (_) => mockLoadingCallback(),
+        onData: (_) => mockDataCallback(),
+      );
+      expect(value, equals(null));
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockLoadingCallback());
+      verifyNever(mockDataCallback());
+    });
+  });
 }
 
 // ignore: one_member_abstracts
-abstract class Callback {
-  void call();
+abstract class Callback<T> {
+  T call();
 }
 
-class MockCallback extends Mock implements Callback {}
+//abstract class CallbackVoid implements Callback<void> {}
+abstract class CallbackVoid implements Callback<void> {}
+
+abstract class CallbackInt implements Callback<int> {}
 
 class _FakeType implements StockResponse<int> {
   @override
