@@ -36,4 +36,14 @@ abstract class Stock<Key, T> {
   /// Returns data for [key] if it is cached otherwise will return
   /// fresh/network data (updating your cache).
   Future<T> get(Key key);
+
+  /// Purge a particular entry from memory and disk cache.
+  /// Persistent storage will only be cleared if a delete function was passed to
+  /// SourceOfTruth.delete when creating the [Stock].
+  Future<void> clear(Key key);
+
+  /// Purge all entries from memory and disk cache.
+  /// Persistent storage will only be cleared if a deleteAll function was passed
+  /// to SourceOfTruth.delete when creating the [Stock].
+  Future<void> clearAll();
 }
