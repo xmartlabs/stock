@@ -48,7 +48,7 @@ extension StockResponseExtensions<T> on StockResponse<T> {
   /// original StockResponse is returned but with a new type [E].
   /// If the response is StockResponseData, the [onData] is invoked to transform
   /// the data into a new data of type [E].
-  StockResponse<E> flatMapData<E>(
+  StockResponse<E> mapData<E>(
     E Function(StockResponseData<T> value) onData,
   ) =>
       this is StockResponseData<T>

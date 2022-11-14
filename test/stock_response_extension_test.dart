@@ -181,14 +181,14 @@ void main() {
     });
   });
 
-  group('FlatMap', () {
-    test('FlatMapData', () {
+  group('Map', () {
+    test('mapData', () {
       final loading = const StockResponseLoading<int>(ResponseOrigin.fetcher)
-          .flatMapData((data) => data.value.toString());
+          .mapData((data) => data.value.toString());
       final data = const StockResponseData<int>(ResponseOrigin.fetcher, 1)
-          .flatMapData((data) => data.value.toString());
+          .mapData((data) => data.value.toString());
       final error = const StockResponseError<int>(ResponseOrigin.fetcher, 1)
-          .flatMapData((data) => data.value.toString());
+          .mapData((data) => data.value.toString());
 
       expect(
         loading,
@@ -203,9 +203,7 @@ void main() {
         equals(const StockResponseError<String>(ResponseOrigin.fetcher, 1)),
       );
     });
-  });
 
-  group('Map', () {
     test('Map for loading', () {
       final mockLoadingCallback = MockCallbackVoid();
       final mockDataCallback = MockCallbackVoid();
