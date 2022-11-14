@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs
 
-import 'package:stock/src/errors.dart';
 import 'package:stock/src/stock_response.dart';
 import 'package:stock/src/stock_response_extensions.dart';
 

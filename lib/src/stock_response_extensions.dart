@@ -49,14 +49,14 @@ extension StockResponseExtensions<T> on StockResponse<T> {
   /// If the response is StockResponseData, the [onData] is invoked to transform
   /// the data into a new data of type [E].
   StockResponse<E> flatMapData<E>(
-    E Function(StockResponseData<T> value) onData
+    E Function(StockResponseData<T> value) onData,
   ) =>
       this is StockResponseData<T>
           ? StockResponse.data(origin, onData(this as StockResponseData<T>))
           : swapType<E>();
 
-  /// Invokes [onData] if the response is successful, [onLoading] if the response
-  /// is loading, and [onError] if the response is an error.
+  /// Invokes [onData] if the response is successful, [onLoading] if the
+  /// response is loading, and [onError] if the response is an error.
   E map<E>({
     required E Function(StockResponseLoading<T> value) onLoading,
     required E Function(StockResponseData<T> value) onData,
@@ -104,8 +104,8 @@ extension StockResponseExtensions<T> on StockResponse<T> {
         orElse: () => null,
       );
 
-  /// Invokes [onData] if the response is successful, [onLoading] if the response
-  /// is loading, and [onError] if the response is an error.
+  /// Invokes [onData] if the response is successful, [onLoading] if the
+  /// response is loading, and [onError] if the response is an error.
   E when<E>({
     required E Function(ResponseOrigin origin) onLoading,
     required E Function(ResponseOrigin origin, T data) onData,
