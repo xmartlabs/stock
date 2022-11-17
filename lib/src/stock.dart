@@ -18,7 +18,7 @@ abstract class Stock<Key, T> {
   /// Stock constructor
   factory Stock({
     required Fetcher<Key, T> fetcher,
-    required SourceOfTruth<Key, T>? sourceOfTruth,
+    SourceOfTruth<Key, T>? sourceOfTruth,
   }) =>
       StockImpl<Key, T>(fetcher: fetcher, sourceOfTruth: sourceOfTruth);
 
