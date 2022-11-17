@@ -66,6 +66,8 @@ Generally you will implement the `SourceOfTruth` using a local database. However
   final sourceOfTruth = SourceOfTruth<String, List<Tweet>>(
     reader: (userId) => _database.getUserTweets(userId),
     writer: (userId, tweets) => _database.writeUserTweets(userId, tweets),
+    delete: (userId) => _database.deleteUserTweets(userId), // this is optional
+    deleteAll: () => _database.deleteAllTweets(), // this is optional
   );
 ```
 
@@ -117,6 +119,9 @@ Stock provides a couple of methods to get data without using a data stream.
 
 1. `get` returns cached data -if it is cached- otherwise will return fresh/network data (updating your caches).
 2. `fresh` returns fresh data updating your cache
+3. `clear` purge a particular entry from memory and disk cache
+4. `clearAll` Purge all entries from memory and disk cache
+
 
 ```dart
   // Get fresh data
@@ -124,7 +129,15 @@ Stock provides a couple of methods to get data without using a data stream.
   
   // Get the previous cached data
   final List<Tweet> cachedTweets = await stock.get(key);
+
+  // Clear key from stock
+  await stock.clear(key);
+
+  // Clear all keys from stock
+  await stock.clearAll();
 ```
+
+
 
 
 ### Use different types for `Fetcher` and `SourceOfTruth`

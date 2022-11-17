@@ -38,15 +38,20 @@ import 'package:stock/src/stock_extensions.dart';
 /// For this case you can use the [mapTo] and [mapToUsingMapper] extensions.
 ///
 abstract class SourceOfTruth<Key, T> {
-  /// Creates a source of truth that is accessed via [reader] and [writer].
+  /// Creates a source of truth that is accessed via [reader], [writer],
+  /// [delete] and [deleteAll].
   ///
   /// The [reader] function is used to read records from the source of truth
   /// The [writer] function is used to write records to the source of truth
+  /// The [delete] function for deleting records in the source of truth.
+  /// The [deleteAll] function for deleting all records in the source of truth
   factory SourceOfTruth({
     required Stream<T?> Function(Key key) reader,
     required Future<void> Function(Key key, T? output) writer,
+    Future<void> Function(Key key)? delete,
+    Future<void> Function()? deleteAll,
   }) =>
-      SourceOfTruthImpl(reader, writer);
+      SourceOfTruthImpl(reader, writer, delete, deleteAll);
 
   /// Used by [Stock] to read records from the source of truth for the given
   /// [key].
@@ -61,6 +66,13 @@ abstract class SourceOfTruth<Key, T> {
   /// APIs as long as you are using a local storage that supports observability
   /// (e.g. Floor, Drift, Realm).
   Future<void> write(Key key, T? value);
+
+  /// Used by [Stock] to delete records in the source of truth for
+  /// the given [key].
+  Future<void> delete(Key key);
+
+  /// Used by [Stock] to delete all records in the source of truth.
+  Future<void> deleteAll();
 }
 
 /// A memory cache implementation of a [SourceOfTruth], which stores the latest
@@ -94,4 +106,13 @@ class CachedSourceOfTruth<Key, T> implements SourceOfTruth<Key, T> {
     setCachedValue(key, value);
     _streamController.add(KeyValue(key, value));
   }
+
+  @override
+  Future<void> delete(Key key) async {
+    _cachedValues.remove(key);
+    _streamController.add(KeyValue(key, null));
+  }
+
+  @override
+  Future<void> deleteAll() async => _cachedValues.keys.toList().forEach(delete);
 }
