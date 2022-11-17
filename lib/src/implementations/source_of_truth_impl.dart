@@ -17,10 +17,10 @@ class SourceOfTruthImpl<Key, T> implements SourceOfTruth<Key, T> {
   Future<void> write(Key key, T? value) => _writer(key, value);
 
   @override
-  Future<void> delete(Key key) async => _delete?.call(key);
+  Future<void> delete(Key key) async => await _delete?.call(key);
 
   @override
-  Future<void> deleteAll() async => _deleteAll?.call();
+  Future<void> deleteAll() async => await _deleteAll?.call();
 }
 
 class WriteWrappedSourceOfTruth<Key, T> extends CachedSourceOfTruth<Key, T> {

@@ -31,8 +31,13 @@ class MockCallbackVoid extends _i1.Mock implements _i2.CallbackVoid {
   }
 
   @override
-  void call() => super.noSuchMethod(Invocation.method(#call, []),
-      returnValueForMissingStub: null);
+  void call() => super.noSuchMethod(
+        Invocation.method(
+          #call,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
 }
 
 /// A class which mocks [CallbackInt].
@@ -44,8 +49,13 @@ class MockCallbackInt extends _i1.Mock implements _i2.CallbackInt {
   }
 
   @override
-  int call() =>
-      (super.noSuchMethod(Invocation.method(#call, []), returnValue: 0) as int);
+  int call() => (super.noSuchMethod(
+        Invocation.method(
+          #call,
+          [],
+        ),
+        returnValue: 0,
+      ) as int);
 }
 
 /// A class which mocks [FutureFetcher].
@@ -58,14 +68,18 @@ class MockFutureFetcher<Key, Output> extends _i1.Mock
   }
 
   @override
-  _i4.Stream<Output> Function(Key) get factory =>
-      (super.noSuchMethod(Invocation.getter(#factory),
-              returnValue: (Key key) => _i4.Stream<Output>.empty())
-          as _i4.Stream<Output> Function(Key));
+  _i4.Stream<Output> Function(Key) get factory => (super.noSuchMethod(
+        Invocation.getter(#factory),
+        returnValue: (Key key) => _i4.Stream<Output>.empty(),
+      ) as _i4.Stream<Output> Function(Key));
   @override
-  set factory(_i4.Stream<Output> Function(Key)? _factory) =>
-      super.noSuchMethod(Invocation.setter(#factory, _factory),
-          returnValueForMissingStub: null);
+  set factory(_i4.Stream<Output> Function(Key)? _factory) => super.noSuchMethod(
+        Invocation.setter(
+          #factory,
+          _factory,
+        ),
+        returnValueForMissingStub: null,
+      );
 }
 
 /// A class which mocks [StreamFetcher].
@@ -78,14 +92,18 @@ class MockStreamFetcher<Key, Output> extends _i1.Mock
   }
 
   @override
-  _i4.Stream<Output> Function(Key) get factory =>
-      (super.noSuchMethod(Invocation.getter(#factory),
-              returnValue: (Key key) => _i4.Stream<Output>.empty())
-          as _i4.Stream<Output> Function(Key));
+  _i4.Stream<Output> Function(Key) get factory => (super.noSuchMethod(
+        Invocation.getter(#factory),
+        returnValue: (Key key) => _i4.Stream<Output>.empty(),
+      ) as _i4.Stream<Output> Function(Key));
   @override
-  set factory(_i4.Stream<Output> Function(Key)? _factory) =>
-      super.noSuchMethod(Invocation.setter(#factory, _factory),
-          returnValueForMissingStub: null);
+  set factory(_i4.Stream<Output> Function(Key)? _factory) => super.noSuchMethod(
+        Invocation.setter(
+          #factory,
+          _factory,
+        ),
+        returnValueForMissingStub: null,
+      );
 }
 
 /// A class which mocks [SourceOfTruth].
@@ -98,12 +116,45 @@ class MockSourceOfTruth<Key, T> extends _i1.Mock
   }
 
   @override
-  _i4.Stream<T?> reader(Key? key) =>
-      (super.noSuchMethod(Invocation.method(#reader, [key]),
-          returnValue: _i4.Stream<T?>.empty()) as _i4.Stream<T?>);
+  _i4.Stream<T?> reader(Key? key) => (super.noSuchMethod(
+        Invocation.method(
+          #reader,
+          [key],
+        ),
+        returnValue: _i4.Stream<T?>.empty(),
+      ) as _i4.Stream<T?>);
   @override
-  _i4.Future<void> write(Key? key, T? value) => (super.noSuchMethod(
-      Invocation.method(#write, [key, value]),
-      returnValue: _i4.Future<void>.value(),
-      returnValueForMissingStub: _i4.Future<void>.value()) as _i4.Future<void>);
+  _i4.Future<void> write(
+    Key? key,
+    T? value,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #write,
+          [
+            key,
+            value,
+          ],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+  @override
+  _i4.Future<void> delete(Key? key) => (super.noSuchMethod(
+        Invocation.method(
+          #delete,
+          [key],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+  @override
+  _i4.Future<void> deleteAll() => (super.noSuchMethod(
+        Invocation.method(
+          #deleteAll,
+          [],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 }

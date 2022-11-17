@@ -55,14 +55,10 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
       );
 
   @override
-  Future<void> clear(Key key) async {
-    await _sourceOfTruth?.delete(key);
-  }
+  Future<void> clear(Key key) async => _sourceOfTruth?.delete(key);
 
   @override
-  Future<void> clearAll() async {
-    await _sourceOfTruth?.deleteAll();
-  }
+  Future<void> clearAll() async => _sourceOfTruth?.deleteAll();
 
   Stream<StockResponse<Output>> streamFromRequest(StockRequest<Key> request) =>
       _generateCombinedNetworkAndSourceOfTruthStream(
