@@ -1,3 +1,9 @@
+## 1.0.1
+* Document improvements ([#34](https://github.com/xmartlabs/stock/pull/34))
+* Make SourceOfTruth non-required in the Stock constrictor ([#33](https://github.com/xmartlabs/stock/pull/33))
+* Add `mapData` extension to transform the `StockResponse<T>` into a `StockResponse<E>` ([#31](https://github.com/xmartlabs/stock/pull/31)).
+* Add `stock.clear(id)` and `stock.clearAll()` functionality. Thanks [Abdktefane](https://github.com/Abdktefane) for PR [#30](https://github.com/xmartlabs/stock/pull/30).
+
 ## 1.0.0
 * Document improvements ([#23](https://github.com/xmartlabs/stock/pull/23))
 * CI improvements ([#22](https://github.com/xmartlabs/stock/pull/22))
