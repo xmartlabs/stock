@@ -173,15 +173,37 @@ void main() {
         throwsA(
           (dynamic e) =>
               e is StockError &&
-              e.toString() ==
-                  'StockError: Type error swapType expect either Success, '
-                      'Error or Loading but was given _FakeType',
+              e.toString().contains(
+                    "Unknown StockResponse type: Instance of '_FakeType'",
+                  ),
         ),
       );
     });
   });
 
   group('Map', () {
+    test('mapData', () {
+      final loading = const StockResponseLoading<int>(ResponseOrigin.fetcher)
+          .mapData((data) => data.value.toString());
+      final data = const StockResponseData<int>(ResponseOrigin.fetcher, 1)
+          .mapData((data) => data.value.toString());
+      final error = const StockResponseError<int>(ResponseOrigin.fetcher, 1)
+          .mapData((data) => data.value.toString());
+
+      expect(
+        loading,
+        equals(const StockResponseLoading<String>(ResponseOrigin.fetcher)),
+      );
+      expect(
+        data,
+        equals(const StockResponseData<String>(ResponseOrigin.fetcher, '1')),
+      );
+      expect(
+        error,
+        equals(const StockResponseError<String>(ResponseOrigin.fetcher, 1)),
+      );
+    });
+
     test('Map for loading', () {
       final mockLoadingCallback = MockCallbackVoid();
       final mockDataCallback = MockCallbackVoid();
