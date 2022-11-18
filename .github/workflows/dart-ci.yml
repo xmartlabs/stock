@@ -12,14 +12,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@v1
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
       - name: Install dependencies
         run: dart pub get
 
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
 
-      - name: Analyze project source
+      - name: Dart Analyze project source
         run: dart analyze --fatal-infos
+
+      - name: Flutter Analyze project source
+        run: flutter analyze .
 
       - name: Analyze project source - Code Metrics
         run: |

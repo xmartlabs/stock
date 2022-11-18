@@ -75,10 +75,7 @@ void main() {
     test('Test a stock with only a stream fetcher', () async {
       final fetcher =
           Fetcher.ofStream((int key) => Stream.fromIterable([1, 2, 3]));
-      final stock = Stock<int, int>(
-        fetcher: fetcher,
-        sourceOfTruth: null,
-      );
+      final stock = Stock<int, int>(fetcher: fetcher);
 
       final resultList = await stock.getFreshResult(1);
       expect(
