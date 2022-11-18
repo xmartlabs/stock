@@ -113,6 +113,8 @@ Each `StockResponse` includes an `origin` field which specifies where the event 
   });
 ```
 
+_Note: `Stock` provides a [large list of extensions][response_extensions] to facilitate and manipulate the responses._
+
 ### Get non-stream data from Stock
 
 Stock provides a couple of methods to get data without using a data stream.
@@ -136,8 +138,6 @@ Stock provides a couple of methods to get data without using a data stream.
   // Clear all keys from stock
   await stock.clearAll();
 ```
-
-
 
 
 ### Use different types for `Fetcher` and `SourceOfTruth`
@@ -234,6 +234,7 @@ Made with ❤️ by [Xmartlabs](https://xmartlabs.com).
 [Drift]: https://pub.dev/packages/drift
 [Floor]: https://pub.dev/packages/floor
 [Realm]: https://pub.dev/packages/realm
+[response_extensions]: https://pub.dev/documentation/stock/latest/stock/StockResponseExtensions.html
 [Store]: https://github.com/MobileNativeFoundation/Store
 [`CachedSourceOfTruth`]: lib/src/source_of_truth.dart
 [`Fetcher`]: lib/src/fetcher.dart
