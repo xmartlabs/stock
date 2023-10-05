@@ -174,7 +174,7 @@ final SourceOfTruth<int, NetworkTweet> newSot = mapTo(
 
 Sometimes your Source of Truth does not provide you with a real-time data stream.
 For example, suppose that you are using [shared_preferences] to store your data, or you are just catching your data in memory.
-For these cases, `Stock` provides you the `CachedSourceOfThruth`, a `SourceOfThruth` that be helpful in these cases.
+For these cases, `Stock` provides you the `CachedSourceOfTruth`, a `SourceOfTruth` that be helpful in these cases.
 
 ```dart
 class SharedPreferencesSourceOfTruth extends CachedSourceOfTruth<String, String> {
