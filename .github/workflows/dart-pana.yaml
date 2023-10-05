@@ -1,10 +1,10 @@
-name: Dart Metrics
+name: Dart Pana
 
 on: [pull_request]
 
 jobs:
   check:
-    name: code-metrics-action
+    name: pana-action
     runs-on: macos-latest
 
     steps:
