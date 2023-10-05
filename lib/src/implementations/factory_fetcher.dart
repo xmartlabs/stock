@@ -14,5 +14,5 @@ class FutureFetcher<Key, Output> extends FactoryFetcher<Key, Output> {
 }
 
 class StreamFetcher<Key, Output> extends FactoryFetcher<Key, Output> {
-  StreamFetcher(Stream<Output> Function(Key key) factory) : super(factory);
+  StreamFetcher(super.factory);
 }
