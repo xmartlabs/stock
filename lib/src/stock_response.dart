@@ -37,7 +37,7 @@ class StockResponse<Output> {
 @immutable
 class StockResponseLoading<T> extends StockResponse<T> {
   /// StockResponseLoading constructor
-  const StockResponseLoading(ResponseOrigin origin) : super._(origin);
+  const StockResponseLoading(super.origin) : super._();
 
   @override
   String toString() => 'StockResponse<$T>.loading(origin: $origin)';
@@ -58,7 +58,7 @@ class StockResponseLoading<T> extends StockResponse<T> {
 @immutable
 class StockResponseData<T> extends StockResponse<T> {
   /// StockResponseData constructor
-  const StockResponseData(ResponseOrigin origin, this.value) : super._(origin);
+  const StockResponseData(super.origin, this.value) : super._();
 
   /// The data value
   final T value;
@@ -82,8 +82,8 @@ class StockResponseData<T> extends StockResponse<T> {
 @immutable
 class StockResponseError<T> extends StockResponse<T> {
   /// StockResponseError constructor
-  const StockResponseError(ResponseOrigin origin, this.error, [this.stackTrace])
-      : super._(origin);
+  const StockResponseError(super.origin, this.error, [this.stackTrace])
+      : super._();
 
   /// The error
   final Object error;

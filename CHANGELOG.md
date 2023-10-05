@@ -1,3 +1,6 @@
+## 1.1.0
+* Dart 3 upgrade
+
 ## 1.0.1
 * Document improvements ([#34](https://github.com/xmartlabs/stock/pull/34))
 * Make SourceOfTruth non-required in the Stock constrictor ([#33](https://github.com/xmartlabs/stock/pull/33))

@@ -77,10 +77,10 @@ extension StockResponseExtensions<T> on StockResponse<T> {
   /// [onLoading] or [orElse] as fallback if the response is loading, and
   /// [onError] or [orElse] as fallback if the response is an error.
   E maybeMap<E>({
+    required E Function() orElse,
     E Function(StockResponseLoading<T> value)? onLoading,
     E Function(StockResponseData<T> value)? onData,
     E Function(StockResponseError<T> value)? onError,
-    required E Function() orElse,
   }) =>
       map(
         onLoading: onLoading ?? (_) => orElse(),
@@ -113,8 +113,7 @@ extension StockResponseExtensions<T> on StockResponse<T> {
       ResponseOrigin origin,
       Object error,
       StackTrace? stackTrace,
-    )
-        onError,
+    ) onError,
   }) =>
       map(
         onLoading: (value) => onLoading(value.origin),
@@ -137,8 +136,7 @@ extension StockResponseExtensions<T> on StockResponse<T> {
       ResponseOrigin origin,
       Object error,
       StackTrace? stackTrace,
-    )?
-        onError,
+    )? onError,
   }) =>
       maybeWhen(
         onLoading: onLoading,
@@ -151,15 +149,14 @@ extension StockResponseExtensions<T> on StockResponse<T> {
   /// [onLoading] or [orElse] as fallback if the response is loading, and
   /// [onError] or [orElse] as fallback if the response is an error.
   E maybeWhen<E>({
+    required E Function(ResponseOrigin origin) orElse,
     E Function(ResponseOrigin origin)? onLoading,
     E Function(ResponseOrigin origin, T data)? onData,
     E Function(
       ResponseOrigin origin,
       Object error,
       StackTrace? stackTrace,
-    )?
-        onError,
-    required E Function(ResponseOrigin origin) orElse,
+    )? onError,
   }) =>
       when(
         onLoading: onLoading ?? (origin) => orElse(origin),

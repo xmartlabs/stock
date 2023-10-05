@@ -5,10 +5,10 @@ import 'cached_source_of_truth_with_default_value.dart';
 class SourceOfTruthWithError<Key, T>
     extends CachedSourceOfTruthWithDefaultValue<Key, T> {
   SourceOfTruthWithError(
-    T? cachedValue, {
+    super.cachedValue, {
     this.throwReadErrorCount = 0,
     this.throwWriteErrorCount = 0,
-  }) : super(cachedValue);
+  });
 
   static final readException = Exception('Read Test Exception');
   static final writeException = Exception('Write Test Exception');
