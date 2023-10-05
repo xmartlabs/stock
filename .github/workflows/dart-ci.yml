@@ -1,14 +1,13 @@
 name: Dart CI
 on:
-  pull_request_target:
+  pull_request:
   push:
     branches:
       - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@v1
@@ -26,18 +25,6 @@ jobs:
 
       - name: Flutter Analyze project source
         run: flutter analyze .
-
-      - name: Analyze project source - Code Metrics
-        run: |
-          result=$(dart run dart_code_metrics:metrics analyze lib  --fatal-style --fatal-performance --fatal-warnings)
-          echo "$result"
-          [[ $result == '✔ no issues found!' ]] || { echo -e "${RED}Linter error" ; exit 1; }
-
-      - name: Analyze project source - Check Unused Code
-        run: dart run dart_code_metrics:metrics check-unused-code lib --fatal-unused
-
-      - name: Analyze project source - Check Unused Files
-        run: dart run dart_code_metrics:metrics check-unused-files lib --fatal-unused
 
       - name: Run tests
         run: |

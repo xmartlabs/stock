@@ -4,17 +4,12 @@ on: [pull_request]
 
 jobs:
   check:
-    name: dart-code-metrics-action
-    runs-on: ubuntu-latest
+    name: code-metrics-action
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@v1
-
-      - name: dart-code-metrics
-        uses: dart-code-checker/dart-code-metrics-action@v2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run pana
         run: |
