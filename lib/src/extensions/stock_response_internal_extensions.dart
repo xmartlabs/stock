@@ -6,9 +6,8 @@ import 'package:stock/src/stock_response_extensions.dart';
 extension StockResponseExtensions<T> on StockResponse<T> {
   StockResponse<R> swapType<R>() => when(
         onData: (origin, data) => StockResponse.data(origin, data as R),
-        onLoading: (origin) => StockResponse.loading(origin),
-        onError: (origin, error, stacktrace) =>
-            StockResponse.error(origin, error, stacktrace),
+        onLoading: StockResponse.loading,
+        onError: StockResponse.error,
       );
 }
 

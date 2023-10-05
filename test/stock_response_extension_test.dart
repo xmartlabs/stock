@@ -293,7 +293,7 @@ void main() {
       const StockResponseLoading<dynamic>(ResponseOrigin.fetcher).maybeMap(
         onData: (_) => mockDataCallback(),
         onError: (_) => mockErrorCallback(),
-        orElse: mockLoadingCallback,
+        orElse: mockLoadingCallback.call,
       );
       verify(mockLoadingCallback()).called(1);
       verifyNever(mockDataCallback());
@@ -322,7 +322,7 @@ void main() {
       const StockResponse.data(ResponseOrigin.fetcher, 1).maybeMap(
         onLoading: (_) => mockLoadingCallback(),
         onError: (_) => mockErrorCallback(),
-        orElse: mockDataCallback,
+        orElse: mockDataCallback.call,
       );
       verifyNever(mockLoadingCallback());
       verify(mockDataCallback()).called(1);
@@ -351,7 +351,7 @@ void main() {
       StockResponseError<dynamic>(ResponseOrigin.fetcher, Error()).maybeMap(
         onLoading: (_) => mockLoadingCallback(),
         onData: (_) => mockDataCallback(),
-        orElse: mockErrorCallback,
+        orElse: mockErrorCallback.call,
       );
       verifyNever(mockLoadingCallback());
       verifyNever(mockDataCallback());
