@@ -1,5 +1,6 @@
 ## 1.1.0
-* Dart 3 upgrade
+* Dart 3 upgrade ([#38](https://github.com/xmartlabs/stock/pull/38))
+* Document improvements ([#37](https://github.com/xmartlabs/stock/pull/37))
 
 ## 1.0.1
 * Document improvements ([#34](https://github.com/xmartlabs/stock/pull/34))
