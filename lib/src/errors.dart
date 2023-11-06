@@ -1,5 +1,5 @@
 /// Used to notify unexpected errors
-class StockError extends Error {
+final class StockError extends Error {
   /// Constructor
   StockError(this.message);
 

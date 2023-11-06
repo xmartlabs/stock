@@ -5,25 +5,27 @@ import 'package:stock/src/stock_response.dart';
 /// Useful [StockResponse] extensions.
 extension StockResponseExtensions<T> on StockResponse<T> {
   /// Returns the available data or throws error if there is no data.
-  T requireData() => when(
-        onData: (_, data) => data,
-        onLoading: (_) => throw StockError('There is no data in loading'),
+  T requireData() => switch (this) {
+        StockResponseLoading<T>() =>
+          throw StockError('There is no data in loading'),
+        StockResponseData<T>(value: final value) => value,
         // ignore: only_throw_errors
-        onError: (_, error, __) => throw error,
-      );
+        StockResponseError<T>(error: final error) => throw error,
+      };
 
   /// If there is data available, returns it; otherwise returns null.
-  T? getDataOrNull() => this is StockResponseData<T>
-      ? (this as StockResponseData<T>).value
-      : null;
+  T? getDataOrNull() => switch (this) {
+        StockResponseData<T>(value: final value) => value,
+        _ => null
+      };
 
   /// Returns the available data or throws error if there is no data.
-  Object requireError() => maybeMap(
-        onError: (response) => response.error,
-        orElse: () => throw StockError(
-          'Response is not an StockResponseError. Response: $this',
-        ),
-      );
+  Object requireError() => switch (this) {
+        StockResponseError<T>(error: final error) => error,
+        _ => throw StockError(
+            'Response is not an StockResponseError. Response: $this',
+          ),
+      };
 
   /// If this [StockResponse] is of type [StockResponseError], throws the
   /// exception. Otherwise, does nothing.
@@ -61,17 +63,12 @@ extension StockResponseExtensions<T> on StockResponse<T> {
     required E Function(StockResponseLoading<T> value) onLoading,
     required E Function(StockResponseData<T> value) onData,
     required E Function(StockResponseError<T> value) onError,
-  }) {
-    if (this is StockResponseLoading<T>) {
-      return onLoading(this as StockResponseLoading<T>);
-    } else if (this is StockResponseData<T>) {
-      return onData(this as StockResponseData<T>);
-    } else if (this is StockResponseError<T>) {
-      return onError(this as StockResponseError<T>);
-    } else {
-      throw StockError('Unknown StockResponse type: $this');
-    }
-  }
+  }) =>
+      switch (this) {
+        StockResponseLoading<T>() => onLoading(this as StockResponseLoading<T>),
+        StockResponseData<T>() => onData(this as StockResponseData<T>),
+        StockResponseError<T>() => onError(this as StockResponseError<T>),
+      };
 
   /// Invokes [onData] or [orElse] as fallback if the response is successful,
   /// [onLoading] or [orElse] as fallback if the response is loading, and

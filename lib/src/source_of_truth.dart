@@ -37,7 +37,7 @@ import 'package:stock/src/stock_extensions.dart';
 /// local storage is needed.
 /// For this case you can use the [mapTo] and [mapToUsingMapper] extensions.
 ///
-abstract class SourceOfTruth<Key, T> {
+abstract interface class SourceOfTruth<Key, T> {
   /// Creates a source of truth that is accessed via [reader], [writer],
   /// [delete] and [deleteAll].
   ///

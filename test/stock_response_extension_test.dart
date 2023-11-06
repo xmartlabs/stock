@@ -1,6 +1,5 @@
 import 'package:mockito/mockito.dart';
 import 'package:stock/src/errors.dart';
-import 'package:stock/src/extensions/stock_response_internal_extensions.dart';
 import 'package:stock/src/stock_response.dart';
 import 'package:stock/src/stock_response_extensions.dart';
 import 'package:test/test.dart';
@@ -155,32 +154,6 @@ void main() {
     });
   });
 
-  group('Unknown type', () {
-    test('Require data throws error if the type is not recognized', () async {
-      expect(
-        _FakeType().requireData,
-        throwsA(
-          (dynamic e) =>
-              e is StockError &&
-              e.toString().contains('Unknown StockResponse type:'),
-        ),
-      );
-    });
-
-    test('Swap type throws error if the type is not recognized', () async {
-      expect(
-        _FakeType().swapType,
-        throwsA(
-          (dynamic e) =>
-              e is StockError &&
-              e.toString().contains(
-                    "Unknown StockResponse type: Instance of '_FakeType'",
-                  ),
-        ),
-      );
-    });
-  });
-
   group('Map', () {
     test('mapData', () {
       final loading = const StockResponseLoading<int>(ResponseOrigin.fetcher)
@@ -244,29 +217,6 @@ void main() {
       verifyNever(mockLoadingCallback());
       verifyNever(mockDataCallback());
       verify(mockErrorCallback()).called(1);
-    });
-
-    test('Map with unknown type', () async {
-      final mockLoadingCallback = MockCallbackVoid();
-      final mockDataCallback = MockCallbackVoid();
-      final mockErrorCallback = MockCallbackVoid();
-      expect(
-        () {
-          _FakeType().map(
-            onLoading: (_) => mockLoadingCallback(),
-            onData: (_) => mockDataCallback(),
-            onError: (_) => mockErrorCallback(),
-          );
-        },
-        throwsA(
-          (dynamic e) =>
-              e is StockError &&
-              e.message.startsWith('Unknown StockResponse type: '),
-        ),
-      );
-      verifyNever(mockLoadingCallback());
-      verifyNever(mockDataCallback());
-      verifyNever(mockErrorCallback());
     });
   });
 
@@ -680,8 +630,3 @@ abstract class Callback<T> {
 abstract class CallbackVoid implements Callback<void> {}
 
 abstract class CallbackInt implements Callback<int> {}
-
-class _FakeType implements StockResponse<int> {
-  @override
-  ResponseOrigin get origin => ResponseOrigin.fetcher;
-}

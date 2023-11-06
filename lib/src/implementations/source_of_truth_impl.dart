@@ -2,7 +2,7 @@
 
 import 'package:stock/src/source_of_truth.dart';
 
-class SourceOfTruthImpl<Key, T> implements SourceOfTruth<Key, T> {
+final class SourceOfTruthImpl<Key, T> implements SourceOfTruth<Key, T> {
   SourceOfTruthImpl(this._reader, this._writer, this._delete, this._deleteAll);
 
   final Stream<T?> Function(Key key) _reader;
@@ -23,7 +23,8 @@ class SourceOfTruthImpl<Key, T> implements SourceOfTruth<Key, T> {
   Future<void> deleteAll() async => await _deleteAll?.call();
 }
 
-class WriteWrappedSourceOfTruth<Key, T> extends CachedSourceOfTruth<Key, T> {
+final class WriteWrappedSourceOfTruth<Key, T>
+    extends CachedSourceOfTruth<Key, T> {
   WriteWrappedSourceOfTruth(this._realSourceOfTruth);
 
   final SourceOfTruth<Key, T>? _realSourceOfTruth;

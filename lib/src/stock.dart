@@ -14,7 +14,7 @@ import 'package:stock/src/stock_response.dart';
 /// truth. Its purpose is to eliminate the need for waiting on a network update
 /// before local modifications are available (via [Stock.stream]).
 ///
-abstract class Stock<Key, T> {
+abstract interface class Stock<Key, T> {
   /// Stock constructor
   factory Stock({
     required Fetcher<Key, T> fetcher,
