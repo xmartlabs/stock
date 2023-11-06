@@ -10,7 +10,7 @@ import 'package:stock/src/stock.dart';
 /// If it's `false`, [Stock] will try to return the [SourceOfTruth] data, and
 /// if it doesn't exist, [Stock] will request fresh data using the [Fetcher].
 ///
-class StockRequest<Key> {
+final class StockRequest<Key> {
   /// [StockRequest] constructor
   StockRequest({
     required this.key,

@@ -1,18 +1,20 @@
 import 'package:mockito/mockito.dart';
+import 'package:stock/src/implementations/factory_fetcher.dart';
 import 'package:stock/src/stock.dart';
 import 'package:test/test.dart';
 
+import 'common/fetcher_mock.dart';
 import 'common/source_of_truth/cached_and_mocked_source_of_truth.dart';
-import 'common_mocks.mocks.dart';
 
 void main() {
   group('Clear tests', () {
     test('Stock Clear invokes SOT clear', () async {
       final sourceOfTruth = createMockedSourceOfTruth<int, int>();
 
-      final fetcher = MockFutureFetcher<int, int>();
       var timesCalled = 0;
-      when(fetcher.factory).thenReturn((key) => Stream.value(++timesCalled));
+      final mockFetcher =
+          MockFutureFetcher<int, int>((key) => Future.value(++timesCalled));
+      final fetcher = FutureFetcher<int, int>(mockFetcher.factory);
 
       final stock = Stock<int, int>(
         fetcher: fetcher,
@@ -28,9 +30,10 @@ void main() {
     test('Stock ClearAll invokes SOT clearAll', () async {
       final sourceOfTruth = createMockedSourceOfTruth<int, int>();
 
-      final fetcher = MockFutureFetcher<int, int>();
       var timesCalled = 0;
-      when(fetcher.factory).thenReturn((key) => Stream.value(++timesCalled));
+      final mockFetcher =
+          MockFutureFetcher<int, int>((key) => Future.value(++timesCalled));
+      final fetcher = FutureFetcher<int, int>(mockFetcher.factory);
 
       final stock = Stock<int, int>(
         fetcher: fetcher,
