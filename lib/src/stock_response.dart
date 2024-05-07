@@ -43,12 +43,11 @@ final class StockResponseLoading<T> extends StockResponse<T> {
   String toString() => 'StockResponse<$T>.loading(origin: $origin)';
 
   @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is StockResponseLoading<T> &&
-            origin == other.origin);
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other.runtimeType == runtimeType &&
+          other is StockResponseLoading<T> &&
+          origin == other.origin);
 
   @override
   int get hashCode => Object.hash(runtimeType, origin.hashCode);
