@@ -9,7 +9,7 @@ import 'package:stock/src/stock.dart';
 /// uses this holder class to represent each response. This allows the [Stream]
 /// to keep flowing even if an error happens so that if there is an observable
 /// single source of truth, the application can keep observing it.
-class StockResponse<Output> {
+sealed class StockResponse<Output> {
   const StockResponse._(this.origin);
 
   /// Loading event dispatched by [Stock] to signal the [Fetcher] is currently
@@ -35,7 +35,7 @@ class StockResponse<Output> {
 /// Loading event dispatched by [Stock] to signal the [Fetcher] is currently
 /// running.
 @immutable
-class StockResponseLoading<T> extends StockResponse<T> {
+final class StockResponseLoading<T> extends StockResponse<T> {
   /// StockResponseLoading constructor
   const StockResponseLoading(super.origin) : super._();
 
@@ -56,7 +56,7 @@ class StockResponseLoading<T> extends StockResponse<T> {
 
 /// Data dispatched by [Stock]
 @immutable
-class StockResponseData<T> extends StockResponse<T> {
+final class StockResponseData<T> extends StockResponse<T> {
   /// StockResponseData constructor
   const StockResponseData(super.origin, this.value) : super._();
 
@@ -80,7 +80,7 @@ class StockResponseData<T> extends StockResponse<T> {
 
 /// Error dispatched by a pipeline
 @immutable
-class StockResponseError<T> extends StockResponse<T> {
+final class StockResponseError<T> extends StockResponse<T> {
   /// StockResponseError constructor
   const StockResponseError(super.origin, this.error, [this.stackTrace])
       : super._();
