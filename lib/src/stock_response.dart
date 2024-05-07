@@ -43,12 +43,11 @@ final class StockResponseLoading<T> extends StockResponse<T> {
   String toString() => 'StockResponse<$T>.loading(origin: $origin)';
 
   @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is StockResponseLoading<T> &&
-            origin == other.origin);
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other.runtimeType == runtimeType &&
+          other is StockResponseLoading<T> &&
+          origin == other.origin);
 
   @override
   int get hashCode => Object.hash(runtimeType, origin.hashCode);
@@ -67,7 +66,7 @@ final class StockResponseData<T> extends StockResponse<T> {
   String toString() => 'StockResponse<$T>.data(origin: $origin, value: $value)';
 
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other.runtimeType == runtimeType &&
           other is StockResponseData<T> &&
@@ -97,7 +96,7 @@ final class StockResponseError<T> extends StockResponse<T> {
       'stackTrace: $stackTrace)';
 
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other.runtimeType == runtimeType &&
           other is StockResponseError<T> &&

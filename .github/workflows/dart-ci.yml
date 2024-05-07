@@ -1,6 +1,6 @@
 name: Dart CI
 on:
-  pull_request_target:
+  pull_request:
   push:
     branches:
       - main
@@ -19,10 +19,9 @@ jobs:
 
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
-
-      - name: Dart Analyze project source
-        run: dart analyze --fatal-infos
-
+      - uses: invertase/github-action-dart-analyzer@v1
+        with:
+          fatal-infos: true
       - name: Flutter Analyze project source
         run: flutter analyze .
 
