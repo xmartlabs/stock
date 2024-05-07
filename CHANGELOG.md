@@ -1,3 +1,7 @@
+## 1.1.1
+* Use dart 3 class modifiers ([#40](https://github.com/xmartlabs/stock/pull/40))
+* Code improvements, fix dart analyze issues ([#42](https://github.com/xmartlabs/stock/pull/42))
+
 ## 1.1.0
 * Dart 3 upgrade ([#38](https://github.com/xmartlabs/stock/pull/38))
 * Document improvements ([#37](https://github.com/xmartlabs/stock/pull/37))
