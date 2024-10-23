@@ -1,3 +1,6 @@
+## 1.1.2
+* Updates rxdart to 0.28.0
+
 ## 1.1.1
 * Use dart 3 class modifiers ([#40](https://github.com/xmartlabs/stock/pull/40))
 * Code improvements, fix dart analyze issues ([#42](https://github.com/xmartlabs/stock/pull/42))
