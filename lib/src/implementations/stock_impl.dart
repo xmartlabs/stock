@@ -26,6 +26,7 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
   final SourceOfTruth<Key, Output>? _sourceOfTruth;
 
   final Map<Key, int> _writingMap = {};
+  final Map<Key, int> _listenerCount = {};
   final _writingLock = Mutex();
 
   @override
@@ -89,9 +90,14 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
     );
 
     yield* controller.stream.whereDataNotNull().doOnCancel(() async {
+      _listenerCount[request.key] = _listenerCount[request.key]! - 1;
       await fetcherSubscription.cancel();
       await sourceOfTruthSubscription.cancel();
-    });
+    }).doOnListen(
+      () => _writingLock.protect(() async {
+        _listenerCount[request.key] = (_listenerCount[request.key] ?? 0) + 1;
+      }),
+    );
   }
 
   StreamSubscription<void> _generateNetworkStream({
@@ -113,8 +119,13 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
           .listen(
             (response) => emitMutex.protect(() async {
               if (response is StockResponseData<Output>) {
-                await _writingLock
-                    .protect(() async => _incrementWritingMap(request, 1));
+                await _writingLock.protect(
+                  () async => _incrementWritingMap(
+                    request,
+                    _listenerCount[request.key]!,
+                  ),
+                );
+                // request, 1));
                 final writerResult = await sourceOfTruth
                     ?.write(request.key, response.value)
                     .mapToResponse(ResponseOrigin.fetcher);

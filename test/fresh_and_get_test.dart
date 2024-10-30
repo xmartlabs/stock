@@ -1,9 +1,10 @@
 import 'package:mockito/mockito.dart';
 import 'package:stock/src/implementations/factory_fetcher.dart';
-import 'package:stock/src/stock.dart';
+import 'package:stock/stock.dart';
 import 'package:test/test.dart';
 
 import 'common/fetcher_mock.dart';
+import 'common/mock_key_value.dart';
 import 'common/source_of_truth/cached_and_mocked_source_of_truth.dart';
 
 void main() {
@@ -26,7 +27,57 @@ void main() {
       verifyNever(sourceOfTruth.reader(any));
       verify(sourceOfTruth.write(any, any)).called(1);
     });
+
+    test('Fresh data is received when a stream is listening the same key',
+        () async {
+      final mockFetcher = MockFutureFetcher<MockIntKeyValue, int>(
+        (key) => Future.value(key.value),
+      );
+      final fetcher = FutureFetcher<MockIntKeyValue, int>(mockFetcher.factory);
+      final sourceOfTruth = createMockedSourceOfTruth<MockIntKeyValue, int>(-1);
+
+      final stock = Stock<MockIntKeyValue, int>(
+        fetcher: fetcher,
+        sourceOfTruth: sourceOfTruth,
+      );
+
+      final streamResult1 = <StockResponse<int>>[];
+      final streamResult2 = <StockResponse<int>>[];
+      stock
+          .stream(const MockIntKeyValue(1, 1), refresh: true)
+          .listen(streamResult1.add);
+      stock
+          .stream(const MockIntKeyValue(2, 20), refresh: false)
+          .listen(streamResult2.add);
+
+      await Future.delayed(const Duration(milliseconds: 50), () {});
+
+      final freshResults = [
+        await stock.fresh(const MockIntKeyValue(1, 2)),
+        await stock.fresh(const MockIntKeyValue(2, 22)),
+        await stock.fresh(const MockIntKeyValue(1, 3)),
+      ];
+
+      const expectedStreamResult1 = [
+        StockResponseLoading<int>(ResponseOrigin.fetcher),
+        StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
+        StockResponse.data(ResponseOrigin.fetcher, 1),
+        StockResponse.data(ResponseOrigin.fetcher, 2),
+        StockResponse.data(ResponseOrigin.fetcher, 3),
+      ];
+      const expectedStreamResult2 = [
+        StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
+        StockResponse.data(ResponseOrigin.fetcher, 22),
+      ];
+
+      const expectedFreshResults = [2, 22, 3];
+      expect(freshResults, expectedFreshResults);
+      expect(streamResult1, equals(expectedStreamResult1));
+      expect(streamResult2, equals(expectedStreamResult2));
+      verify(sourceOfTruth.write(any, any)).called(4);
+    });
   });
+
   group('Get tests', () {
     test('Fetcher is not called when get is invoked and sot has data',
         () async {
