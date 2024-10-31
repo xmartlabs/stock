@@ -6,6 +6,7 @@ import 'package:test/test.dart';
 import 'common/fetcher_mock.dart';
 import 'common/mock_key_value.dart';
 import 'common/source_of_truth/cached_and_mocked_source_of_truth.dart';
+import 'common/stock_test_extensions.dart';
 
 void main() {
   group('Fresh tests', () {
@@ -54,7 +55,7 @@ void main() {
 
       final freshResults = [
         await stock.fresh(const MockIntKeyValue(1, 2)),
-        await stock.fresh(const MockIntKeyValue(2, 22)),
+        await stock.fresh(const MockIntKeyValue(2, 4)),
         await stock.fresh(const MockIntKeyValue(1, 3)),
       ];
 
@@ -67,14 +68,117 @@ void main() {
       ];
       const expectedStreamResult2 = [
         StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
-        StockResponse.data(ResponseOrigin.fetcher, 22),
+        StockResponse.data(ResponseOrigin.fetcher, 4),
       ];
 
-      const expectedFreshResults = [2, 22, 3];
+      const expectedFreshResults = [2, 4, 3];
       expect(freshResults, expectedFreshResults);
       expect(streamResult1, equals(expectedStreamResult1));
       expect(streamResult2, equals(expectedStreamResult2));
       verify(sourceOfTruth.write(any, any)).called(4);
+    });
+    test('Multiple Fresh data requests concurrently', () async {
+      final mockFetcher = MockFutureFetcher<MockIntKeyValue, int>(
+        (key) => Future.delayed(
+          Duration(milliseconds: 50 * key.value),
+          () => key.value,
+        ),
+      );
+      final fetcher = FutureFetcher<MockIntKeyValue, int>(mockFetcher.factory);
+      final sourceOfTruth = createMockedSourceOfTruth<MockIntKeyValue, int>(-1);
+
+      final stock = Stock<MockIntKeyValue, int>(
+        fetcher: fetcher,
+        sourceOfTruth: sourceOfTruth,
+      );
+
+      final streamResult1 = <StockResponse<int>>[];
+      final streamResult2 = <StockResponse<int>>[];
+      final subscription1 = stock
+          .stream(const MockIntKeyValue(1, 1), refresh: true)
+          .listen(streamResult1.add);
+      final subscription2 = stock
+          .stream(const MockIntKeyValue(2, 20), refresh: false)
+          .listen(streamResult2.add);
+
+      await Future.delayed(const Duration(milliseconds: 50), () {});
+
+      final freshResultsFutures = [
+        stock.fresh(const MockIntKeyValue(1, 5)),
+        stock.fresh(const MockIntKeyValue(2, 4)),
+        stock.fresh(const MockIntKeyValue(1, 1)),
+      ];
+      final freshResults = await Future.wait(freshResultsFutures);
+      const expectedStreamResult1 = [
+        StockResponseLoading<int>(ResponseOrigin.fetcher),
+        StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
+        StockResponse.data(ResponseOrigin.fetcher, 1),
+        StockResponse.data(ResponseOrigin.fetcher, 1),
+        StockResponse.data(ResponseOrigin.fetcher, 5),
+      ];
+      const expectedStreamResult2 = [
+        StockResponse.data(ResponseOrigin.sourceOfTruth, -1),
+        StockResponse.data(ResponseOrigin.fetcher, 4),
+      ];
+
+      const expectedFreshResults = [5, 4, 1];
+      await subscription1.cancel();
+      await subscription2.cancel();
+      expect(freshResults, expectedFreshResults);
+      expect(streamResult1, equals(expectedStreamResult1));
+      expect(streamResult2, equals(expectedStreamResult2));
+      verify(sourceOfTruth.write(any, any)).called(4);
+    });
+    test('Check pending request with multiple fresh data', () async {
+      const delayFactor = 50;
+      final mockFetcher = MockFutureFetcher<MockIntKeyValue, int>(
+        (key) => Future.delayed(
+          Duration(milliseconds: delayFactor * key.value),
+          () => key.value,
+        ),
+      );
+      final fetcher = FutureFetcher<MockIntKeyValue, int>(mockFetcher.factory);
+      final sourceOfTruth = createMockedSourceOfTruth<MockIntKeyValue, int>(-1);
+
+      final stock = Stock<MockIntKeyValue, int>(
+        fetcher: fetcher,
+        sourceOfTruth: sourceOfTruth,
+      );
+
+      final streamResult1 = <StockResponse<int>>[];
+      final streamResult2 = <StockResponse<int>>[];
+      final subscription1 = stock
+          .stream(const MockIntKeyValue(1, 1), refresh: true)
+          .listen(streamResult1.add);
+
+      final subscription2 = stock
+          .stream(const MockIntKeyValue(2, 1), refresh: false)
+          .listen(streamResult2.add);
+      await Future.delayed(const Duration(milliseconds: 10), () {});
+      expect(stock.currentStreamSessionCount, equals(2));
+      expect(stock.sessionFetcherPendingRequests, equals(0));
+      await Future.delayed(const Duration(milliseconds: delayFactor), () {});
+
+      final freshResultsFutures = [
+        stock.fresh(const MockIntKeyValue(1, 5)),
+        stock.fresh(const MockIntKeyValue(2, 4)),
+        stock.fresh(const MockIntKeyValue(1, 1)),
+      ];
+      await Future.delayed(const Duration(milliseconds: 10), () {});
+      expect(stock.currentStreamSessionCount, equals(5));
+      expect(stock.sessionFetcherPendingRequests, equals(0));
+
+      await Future.wait(freshResultsFutures);
+      expect(stock.currentStreamSessionCount, equals(2));
+      expect(stock.sessionFetcherPendingRequests, equals(0));
+
+      await subscription1.cancel();
+      expect(stock.currentStreamSessionCount, equals(1));
+      expect(stock.sessionFetcherPendingRequests, equals(0));
+
+      await subscription2.cancel();
+      expect(stock.currentStreamSessionCount, equals(0));
+      expect(stock.sessionFetcherPendingRequests, equals(0));
     });
   });
 
