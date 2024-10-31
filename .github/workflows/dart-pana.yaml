@@ -5,7 +5,7 @@ on: [pull_request]
 jobs:
   check:
     name: pana-action
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
