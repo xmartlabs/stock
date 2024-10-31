@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs
 
 import 'dart:async';
+import 'dart:math';
 
+import 'package:meta/meta.dart';
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:stock/src/extensions/future_stream_internal_extensions.dart';
@@ -15,6 +17,9 @@ import 'package:stock/src/stock_request.dart';
 import 'package:stock/src/stock_response.dart';
 import 'package:stock/src/stock_response_extensions.dart';
 
+@visibleForTesting
+typedef SessionStreamKey = double;
+
 class StockImpl<Key, Output> implements Stock<Key, Output> {
   StockImpl({
     required Fetcher<Key, Output> fetcher,
@@ -25,8 +30,11 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
   final FactoryFetcher<Key, Output> _fetcher;
   final SourceOfTruth<Key, Output>? _sourceOfTruth;
 
-  final Map<Key, int> _writingMap = {};
-  final _writingLock = Mutex();
+  @visibleForTesting
+  final Map<Key, Set<SessionStreamKey>> sessionFetcherPendingRequests = {};
+  @visibleForTesting
+  final Map<Key, Set<SessionStreamKey>> currentStreamSessions = {};
+  final _notifyPendingRequestsLock = Mutex();
 
   @override
   Future<Output> fresh(Key key) =>
@@ -70,6 +78,8 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
     StockRequest<Key> request,
     SourceOfTruth<Key, Output> sourceOfTruth,
   ) async* {
+    final sessionKey = Random.secure().nextDouble();
+
     final controller = StreamController<StockResponse<Output?>>.broadcast();
     final syncLock = Mutex();
     await syncLock.acquire();
@@ -79,6 +89,7 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
       request: request,
       sourceOfTruth: sourceOfTruth,
       emitMutex: syncLock,
+      sessionStreamKey: sessionKey,
     );
 
     final sourceOfTruthSubscription = _generateSourceOfTruthStreamSubscription(
@@ -86,12 +97,19 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
       sourceOfTruth: sourceOfTruth,
       dataStreamController: controller,
       dbLock: syncLock,
+      sessionStreamKey: sessionKey,
     );
 
     yield* controller.stream.whereDataNotNull().doOnCancel(() async {
+      currentStreamSessions[request.key]?.remove(sessionKey);
       await fetcherSubscription.cancel();
       await sourceOfTruthSubscription.cancel();
-    });
+    }).doOnListen(
+      () => _notifyPendingRequestsLock.protect(() async {
+        currentStreamSessions[request.key] =
+            (currentStreamSessions[request.key] ?? {})..add(sessionKey);
+      }),
+    );
   }
 
   StreamSubscription<void> _generateNetworkStream({
@@ -99,6 +117,7 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
     required SourceOfTruth<Key, Output>? sourceOfTruth,
     required Mutex emitMutex,
     required StreamController<StockResponse<Output?>> dataStreamController,
+    required SessionStreamKey sessionStreamKey,
   }) =>
       Stream.fromFuture(
         _shouldStartNetworkStream(request, dataStreamController),
@@ -113,15 +132,21 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
           .listen(
             (response) => emitMutex.protect(() async {
               if (response is StockResponseData<Output>) {
-                await _writingLock
-                    .protect(() async => _incrementWritingMap(request, 1));
+                await _notifyPendingRequestsLock.protect(
+                  () async => _setupSessionPendingRequest(
+                    request,
+                    currentStreamSessions[request.key]!,
+                  ),
+                );
                 final writerResult = await sourceOfTruth
                     ?.write(request.key, response.value)
                     .mapToResponse(ResponseOrigin.fetcher);
                 if (writerResult is StockResponseError) {
                   dataStreamController.add(writerResult.swapType());
-                  await _writingLock
-                      .protect(() async => _incrementWritingMap(request, -1));
+                  await _notifyPendingRequestsLock.protect(
+                    () async => sessionFetcherPendingRequests[request.key]
+                        ?.remove(sessionStreamKey),
+                  );
                 }
               } else {
                 dataStreamController.add(response);
@@ -129,8 +154,13 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
             }),
           );
 
-  int _incrementWritingMap(StockRequest<Key> request, int increment) =>
-      _writingMap[request.key] = (_writingMap[request.key] ?? 0) + increment;
+  void _setupSessionPendingRequest(
+    StockRequest<Key> request,
+    Set<SessionStreamKey> currentSessions,
+  ) =>
+      sessionFetcherPendingRequests[request.key] =
+          (sessionFetcherPendingRequests[request.key] ?? {})
+            ..addAll(currentSessions);
 
   Stream<StockResponse<Output>> _startNetworkFlow(
     bool shouldFetchNewValue,
@@ -167,6 +197,7 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
     required SourceOfTruth<Key, Output> sourceOfTruth,
     required Mutex dbLock,
     required StreamController<StockResponse<Output?>> dataStreamController,
+    required SessionStreamKey sessionStreamKey,
   }) {
     var initialSyncDone = false;
     final sourceOfTruthSubscription = sourceOfTruth
@@ -174,13 +205,12 @@ class StockImpl<Key, Output> implements Stock<Key, Output> {
         .mapToResponse(ResponseOrigin.sourceOfTruth)
         .listen((response) async {
       if (response is StockResponseData<Output?>) {
-        final fetcherData = await _writingLock.protect(() async {
-          final writingKeyData = (_writingMap[request.key] ?? -1) > 0;
-          if (writingKeyData) {
-            _incrementWritingMap(request, -1);
-          }
-          return writingKeyData;
-        });
+        final fetcherData = await _notifyPendingRequestsLock.protect(
+          () async =>
+              sessionFetcherPendingRequests[request.key]
+                  ?.remove(sessionStreamKey) ??
+              false,
+        );
         dataStreamController.add(
           StockResponseData(
             fetcherData ? ResponseOrigin.fetcher : response.origin,

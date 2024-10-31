@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:dartx/dartx.dart';
+import 'package:stock/src/implementations/stock_impl.dart';
 import 'package:stock/src/stock.dart';
 import 'package:stock/src/stock_response.dart';
 
@@ -25,6 +27,15 @@ extension StockExtensions<Key, Output> on Stock<Key, Output> {
         (value) =>
             value.map((items) => items.removeStacktraceIfNeeded()).toList(),
       );
+
+  int get currentStreamSessionCount => (this as StockImpl)
+      .currentStreamSessions
+      .entries
+      .sumBy((e) => e.value.length);
+  int get sessionFetcherPendingRequests => (this as StockImpl)
+      .sessionFetcherPendingRequests
+      .entries
+      .sumBy((e) => e.value.length);
 }
 
 class ResultListener<T> {
