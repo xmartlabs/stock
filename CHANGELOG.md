@@ -1,5 +1,6 @@
 ## 1.1.2
-* Updates rxdart to 0.28.0
+* Fix concurrency issue when multiple requests are made with the same key  ([#45](https://github.com/xmartlabs/stock/pull/45))
+* Updates rxdart to 0.28.0 ([#45](https://github.com/xmartlabs/stock/pull/45))
 
 ## 1.1.1
 * Use dart 3 class modifiers ([#40](https://github.com/xmartlabs/stock/pull/40))
